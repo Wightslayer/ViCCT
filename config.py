@@ -16,7 +16,7 @@ cfg.SEED = 42  # Seed for reproducibility.
 # The model must be selected from above (Valid_model_names) AND the dataset name MUST match the name in the dataset
 # folder. E.g. SHTB_DeiT to load SHTB for DeiT. Just SHTB does not work!
 cfg.MODEL = 'ViCCT_small'
-cfg.DATASET = 'SHTB_ViCCT'
+cfg.DATASET = 'Multiset'
 
 # Training parameters
 cfg.LR = 1e-4  # LR for meta learning in meta learning. Standard LR for standard learning
