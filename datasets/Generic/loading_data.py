@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import datasets.transforms as own_transforms
 
 from .settings import cfg_data
-from .Multiset import Multiset
+from .Generic import Generic
 
 
 def loading_data(crop_size):
@@ -38,31 +38,31 @@ def loading_data(crop_size):
         standard_transforms.ToPILImage()
     ])
 
-    train_set = Multiset(cfg_data.TRAIN_BASE_PATHS, 'train', crop_size,
-                         main_transform=train_main_transform,
-                         img_transform=train_img_transform,
-                         gt_transform=gt_transform,
-                         cropper=train_cropper)
+    train_set = Generic(cfg_data.TRAIN_BASE_PATHS, 'train', crop_size,
+                        main_transform=train_main_transform,
+                        img_transform=train_img_transform,
+                        gt_transform=gt_transform,
+                        cropper=train_cropper)
     train_loader = DataLoader(train_set,
                               batch_size=cfg_data.TRAIN_BS,
                               num_workers=cfg_data.N_WORKERS,
                               shuffle=True, drop_last=True)
 
-    val_set = Multiset(cfg_data.VAL_BASE_PATHS, 'val', crop_size,
-                       main_transform=None,
-                       img_transform=val_img_transform,
-                       gt_transform=gt_transform,
-                       cropper=None)
+    val_set = Generic(cfg_data.VAL_BASE_PATHS, 'val', crop_size,
+                      main_transform=None,
+                      img_transform=val_img_transform,
+                      gt_transform=gt_transform,
+                      cropper=None)
     val_loader = DataLoader(val_set,
                             batch_size=cfg_data.VAL_BS,
                             num_workers=cfg_data.N_WORKERS,
                             shuffle=False, drop_last=False)
 
-    test_set = Multiset(cfg_data.TEST_BASE_PATHS, 'test', crop_size,
-                        main_transform=None,
-                        img_transform=val_img_transform,
-                        gt_transform=gt_transform,
-                        cropper=None)
+    test_set = Generic(cfg_data.TEST_BASE_PATHS, 'test', crop_size,
+                       main_transform=None,
+                       img_transform=val_img_transform,
+                       gt_transform=gt_transform,
+                       cropper=None)
     test_loader = DataLoader(test_set,
                              batch_size=cfg_data.VAL_BS,
                              num_workers=cfg_data.N_WORKERS,

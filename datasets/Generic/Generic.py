@@ -11,7 +11,7 @@ from .settings import cfg_data
 from datasets.dataset_utils import img_equal_split, img_equal_unsplit
 
 
-class Multiset(data.Dataset):
+class Generic(data.Dataset):
     def __init__(self, data_paths, mode, crop_size,
                  main_transform=None, img_transform=None, gt_transform=None, cropper=None):
 
