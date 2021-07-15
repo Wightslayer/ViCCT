@@ -3,12 +3,11 @@ from torch.utils.data import DataLoader
 import datasets.transforms as own_transforms
 
 from .settings import cfg_data
-from .Generic import Generic
+from .Generic_ViCCT import Generic_ViCCT
 
 
 def loading_data(crop_size):
     # train transforms
-    crop_size = 224
 
     train_main_transform = own_transforms.Compose([
         own_transforms.RandomCrop([crop_size, crop_size]),  # For training, crop a random part of an image (and GT)
@@ -38,31 +37,31 @@ def loading_data(crop_size):
         standard_transforms.ToPILImage()
     ])
 
-    train_set = Generic(cfg_data.TRAIN_BASE_PATHS, 'train', crop_size,
-                        main_transform=train_main_transform,
-                        img_transform=train_img_transform,
-                        gt_transform=gt_transform,
-                        cropper=train_cropper)
+    train_set = Generic_ViCCT(cfg_data.TRAIN_BASE_PATHS, 'train', crop_size,
+                              main_transform=train_main_transform,
+                              img_transform=train_img_transform,
+                              gt_transform=gt_transform,
+                              cropper=train_cropper)
     train_loader = DataLoader(train_set,
                               batch_size=cfg_data.TRAIN_BS,
                               num_workers=cfg_data.N_WORKERS,
                               shuffle=True, drop_last=True)
 
-    val_set = Generic(cfg_data.VAL_BASE_PATHS, 'val', crop_size,
-                      main_transform=None,
-                      img_transform=val_img_transform,
-                      gt_transform=gt_transform,
-                      cropper=None)
+    val_set = Generic_ViCCT(cfg_data.VAL_BASE_PATHS, 'val', crop_size,
+                            main_transform=None,
+                            img_transform=val_img_transform,
+                            gt_transform=gt_transform,
+                            cropper=None)
     val_loader = DataLoader(val_set,
                             batch_size=cfg_data.VAL_BS,
                             num_workers=cfg_data.N_WORKERS,
                             shuffle=False, drop_last=False)
 
-    test_set = Generic(cfg_data.TEST_BASE_PATHS, 'test', crop_size,
-                       main_transform=None,
-                       img_transform=val_img_transform,
-                       gt_transform=gt_transform,
-                       cropper=None)
+    test_set = Generic_ViCCT(cfg_data.TEST_BASE_PATHS, 'test', crop_size,
+                             main_transform=None,
+                             img_transform=val_img_transform,
+                             gt_transform=gt_transform,
+                             cropper=None)
     test_loader = DataLoader(test_set,
                              batch_size=cfg_data.VAL_BS,
                              num_workers=cfg_data.N_WORKERS,
