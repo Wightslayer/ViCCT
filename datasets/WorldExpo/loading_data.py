@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import datasets.transforms as own_transforms
 
 from .settings import cfg_data
-from .WE_ViCCT import WE_ViCCT
+from .WorldExpo import WorldExpo
 
 
 def loading_data(crop_size):
@@ -45,7 +45,7 @@ def loading_data(crop_size):
         standard_transforms.ToPILImage()
     ])
 
-    train_set = WE_ViCCT(cfg_data.DATA_PATH, 'train', crop_size,
+    train_set = WorldExpo(cfg_data.DATA_PATH, 'train', crop_size,
                         main_transform=train_main_transform,
                         img_transform=train_img_transform,
                         gt_transform=train_gt_transform,
@@ -55,7 +55,7 @@ def loading_data(crop_size):
                               num_workers=cfg_data.N_WORKERS,
                               shuffle=True, drop_last=True)
 
-    val_set = WE_ViCCT(cfg_data.DATA_PATH, 'val', crop_size,
+    val_set = WorldExpo(cfg_data.DATA_PATH, 'val', crop_size,
                       main_transform=val_main_transform,
                       img_transform=val_img_transform,
                       gt_transform=val_gt_transform,
@@ -65,7 +65,7 @@ def loading_data(crop_size):
                             num_workers=cfg_data.N_WORKERS,
                             shuffle=False, drop_last=False)
 
-    test_set = WE_ViCCT(cfg_data.DATA_PATH, 'test', crop_size,
+    test_set = WorldExpo(cfg_data.DATA_PATH, 'test', crop_size,
                        main_transform=val_main_transform,
                        img_transform=val_img_transform,
                        gt_transform=val_gt_transform,
