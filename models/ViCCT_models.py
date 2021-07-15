@@ -344,6 +344,7 @@ def init_model_state(model, init_path):
     modified_model_state = model.state_dict()
     # With this, we are able to load the pretrained modules while ignoring the new regression modules.
     for key in pretrained_state.keys():
+        # We only load the first half of ViCCT large, so some parameters are not in model state.
         if key in modified_model_state.keys():
             modified_model_state[key] = pretrained_state[key]
         else:

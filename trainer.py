@@ -36,7 +36,7 @@ class Trainer:
         self.eval_save_example_every = self.val_samples // self.cfg.SAVE_NUM_EVAL_EXAMPLES
 
         self.criterion = torch.nn.MSELoss()
-        self.optim = torch.optim.Adam(model.parameters(), lr=cfg.BETA, weight_decay=cfg.WEIGHT_DECAY)  # BETA = LR
+        self.optim = torch.optim.Adam(model.parameters(), lr=cfg.LR, weight_decay=cfg.WEIGHT_DECAY)
         # We take a step only at predefined epochs. Hence, step_size = 1.
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optim, step_size=1, gamma=cfg.LR_GAMMA)
 

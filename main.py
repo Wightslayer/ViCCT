@@ -5,7 +5,7 @@ import torch
 import torch.backends.cudnn as cudnn
 import os
 
-import models.ViCCTModels  # Needed to register models for 'create_model'
+import models.ViCCT_models  # Needed to register models for 'create_model'
 from timm.models import create_model
 
 import importlib
@@ -60,13 +60,13 @@ def main(cfg):
     else:  # Make a backup of some important files for archiving purposes.
         make_save_dirs(cfg)  # The folders to categorize the files
         copyfile('config.py', os.path.join(cfg.CODE_DIR, 'config.py'))
-        copyfile('trainer_standard.py', os.path.join(cfg.CODE_DIR, 'trainer_standard.py'))
-        copyfile('models/ViCCTModels.py', os.path.join(cfg.CODE_DIR, 'ViCCTModels.py'))
-        copyfile(os.path.join('datasets', 'standard', cfg.DATASET, 'settings.py'),
+        copyfile('trainer.py', os.path.join(cfg.CODE_DIR, 'trainer.py'))
+        copyfile('models/ViCCT_models.py', os.path.join(cfg.CODE_DIR, 'ViCCT_models.py'))
+        copyfile(os.path.join('datasets', cfg.DATASET, 'settings.py'),
                  os.path.join(cfg.CODE_DIR, 'settings.py'))
-        copyfile(os.path.join('datasets', 'standard', cfg.DATASET, 'loading_data.py'),
+        copyfile(os.path.join('datasets', cfg.DATASET, 'loading_data.py'),
                  os.path.join(cfg.CODE_DIR, 'loading_data.py'))
-        copyfile(os.path.join('datasets', 'standard', cfg.DATASET, cfg.DATASET + '.py'),
+        copyfile(os.path.join('datasets', cfg.DATASET, cfg.DATASET + '.py'),
                  os.path.join(cfg.CODE_DIR, cfg.DATASET + '.py'))
 
     # Seeds for reproducibility
