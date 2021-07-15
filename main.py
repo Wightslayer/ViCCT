@@ -5,12 +5,12 @@ import torch
 import torch.backends.cudnn as cudnn
 import os
 
-import models.ViCCT.ViCCTModels  # Needed to register models for 'create_model'
+import models.ViCCTModels  # Needed to register models for 'create_model'
 from timm.models import create_model
 
 import importlib
 
-from trainer_standard import Trainer
+from trainer import Trainer
 from config import cfg
 from shutil import copyfile
 import random
@@ -61,7 +61,7 @@ def main(cfg):
         make_save_dirs(cfg)  # The folders to categorize the files
         copyfile('config.py', os.path.join(cfg.CODE_DIR, 'config.py'))
         copyfile('trainer_standard.py', os.path.join(cfg.CODE_DIR, 'trainer_standard.py'))
-        copyfile('models/ViCCT/ViCCTModels.py', os.path.join(cfg.CODE_DIR, 'ViCCTModels.py'))
+        copyfile('models/ViCCTModels.py', os.path.join(cfg.CODE_DIR, 'ViCCTModels.py'))
         copyfile(os.path.join('datasets', 'standard', cfg.DATASET, 'settings.py'),
                  os.path.join(cfg.CODE_DIR, 'settings.py'))
         copyfile(os.path.join('datasets', 'standard', cfg.DATASET, 'loading_data.py'),
@@ -94,8 +94,8 @@ def main(cfg):
     print('number of params:', n_parameters)  # Print the number of trainable parameters of the model
 
     # Dynamically loads the dataloader and its settings as specified in the config file
-    dataloader = importlib.import_module(f'datasets.standard.{cfg.DATASET}.loading_data').loading_data
-    cfg_data = importlib.import_module(f'datasets.standard.{cfg.DATASET}.settings').cfg_data
+    dataloader = importlib.import_module(f'datasets.{cfg.DATASET}.loading_data').loading_data
+    cfg_data = importlib.import_module(f'datasets.{cfg.DATASET}.settings').cfg_data
 
     trainer = Trainer(model, dataloader, cfg, cfg_data)  # Make a trainer object
     trainer.train()  # Train the model

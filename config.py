@@ -6,7 +6,7 @@ import math
 cfg = edict()
 
 # Valid_model_names = [
-#     ViCCT_tiny, ViCCT_small, ViCCT_base
+#     ViCCT_tiny, ViCCT_small, ViCCT_base, ViCCT_large
 # ]
 
 
@@ -18,27 +18,13 @@ cfg.SEED = 42  # Seed for reproducibility.
 cfg.MODEL = 'ViCCT_large'
 cfg.DATASET = 'SHTB_ViCCT'
 
-# cfg.MODEL = 'CSRNet'
-# cfg.DATASET = 'WE_CSRNet_Meta'
-
-# cfg.MODEL = 'ViCCT_tiny'
-# cfg.DATASET = 'WE_ViCCT_Meta'
-
-# cfg.MODEL = 'SineNet'  # SineNet, CSRNet, or DeiT
-# cfg.DATASET = 'SineWave_Meta'
-
 # Training parameters
-cfg.BETA = 1e-4  # LR for meta learning in meta learning. Standard LR for standard learning
+cfg.LR = 1e-4  # LR for meta learning in meta learning. Standard LR for standard learning
 cfg.LR_GAMMA = math.sqrt(0.1)  # Scale LR by this at each step in LR_STEP_EPCH
 cfg.LR_STEP_EPOCHS = [100, 500, 900]  # Make one step with the learning rate scheduler at these epochs
 cfg.WEIGHT_DECAY = 1e-5
 cfg.GRAD_CLIP_NORM = 1.  # Attempt to make meta-learning more stable. Set to None for no clipping
 
-cfg.MAML = False  # For meta learning only. Whether to train as MAML or as Meta-SGD
-cfg.ALPHA_START = 500     # For meta learning only. Start updating alpha at this epoch
-cfg.ALPHA_INIT = 1e-5     # For meta learning only. Use also for Alpha lr in MAML
-
-cfg.N_TASKS = 4  # How many tasks to perform before performing an outer backprop
 
 cfg.MAX_EPOCH = 1300  # Train for this many epochs
 cfg.EVAL_EVERY = 10  # Eval the model on the evaluation set every 'EVAL_EVERY' epochs
