@@ -14,7 +14,7 @@ cfg_data.VAL_BASE_PATHS = [
 ]
 
 cfg_data.TEST_BASE_PATHS = [
-    'D:\\ThesisData\\Datasets\\CV Arena 05'
+    'D:\\ThesisData\\Datasets\\SHTB_STD'
 ]
 
 cfg_data.TRAIN_BS = 10
