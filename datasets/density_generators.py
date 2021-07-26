@@ -6,11 +6,13 @@ import scipy.io as io
 from PIL import Image
 import json
 
-def gen_den_from_points(width, height, gt_points, sigma=4, truncate=2):
+
+def gen_scaled_den_from_points(width, height, gt_points, scale=1., sigma=4, truncate=2):
     """ Creates a density map with given size and the provided points. """
 
     k = np.zeros((height, width))
 
+    gt_points = scale * gt_points
     for (x, y) in gt_points.astype(int):
         if x < width and y < height:
             k[y, x] = 1  # Note the order of x and y here. Height is stored in first dimension
@@ -27,7 +29,7 @@ def gen_den_from_points(width, height, gt_points, sigma=4, truncate=2):
 def get_gt_SHT(gt_path, img_w, img_h, scaling=1.):
     mat = io.loadmat(gt_path)
     points = mat["image_info"][0, 0][0, 0][0]
-    den = gen_den_from_points(img_w, img_h, points)
+    den = gen_scaled_den_from_points(img_w, img_h, points, scaling)
 
     return den
 
@@ -38,7 +40,7 @@ def get_gt_SHT(gt_path, img_w, img_h, scaling=1.):
 def get_gt_UCF_QNRF_ECCV18(gt_path, img_w, img_h, scaling=1.):
     mat = io.loadmat(gt_path)
     points = mat['annPoints']
-    den = gen_den_from_points(img_w, img_h, points)
+    den = gen_scaled_den_from_points(img_w, img_h, points, scaling)
 
     return den
 
@@ -72,7 +74,7 @@ def get_gt_LSTN_FDST(gt_path, img_w, img_h, scaling=1.):
     regions = list(gt.values())[0]['regions']
     points = LSTN_FDST_regions_to_points(regions)
 
-    den = gen_den_from_points(img_w, img_h, points)
+    den = gen_scaled_den_from_points(img_w, img_h, points, scaling)
 
     return den
 
@@ -99,7 +101,7 @@ def get_gt_JHU_CROWD_PlusPlus(gt_path, img_w, img_h, scaling=1.):
 
     points = JHU_CROWD_lines_to_points(lines)
 
-    den = gen_den_from_points(img_w, img_h, points)
+    den = gen_scaled_den_from_points(img_w, img_h, points, scaling)
 
     return den
 
@@ -110,7 +112,7 @@ def get_gt_JHU_CROWD_PlusPlus(gt_path, img_w, img_h, scaling=1.):
 def get_gt_NWPU_Crowd(gt_path, img_w, img_h, scaling=1.):
     mat = io.loadmat(gt_path)
     points = mat['annPoints']
-    den = gen_den_from_points(img_w, img_h, points)
+    den = gen_scaled_den_from_points(img_w, img_h, points, scaling)
 
     return den
 
@@ -120,6 +122,8 @@ def get_gt_NWPU_Crowd(gt_path, img_w, img_h, scaling=1.):
 # ============================================================================================= #
 def get_gt_WorldExpo(gt_path, img_w, img_h, scaling=1.):
     """ dens are pre-generated. Image size is provided to comply to standard. Scaling is not supported!"""
+
+    assert scaling == 1., 'Scaling WorldExpo images is not supported!'
 
     den = pd.read_csv(gt_path, header=None).values
 
@@ -145,7 +149,7 @@ def municipality_csv_to_points(gt_path):
 
 def get_gt_Municipality(gt_path, img_w, img_h, scaling=1.):
     points = municipality_csv_to_points(gt_path)
-    den = gen_den_from_points(img_w, img_h, points)
+    den = gen_scaled_den_from_points(img_w, img_h, points, scaling)
 
     return den
 
@@ -164,11 +168,29 @@ gt_loaders = {
     'Municipality': get_gt_Municipality
 }
 
-def get_img_and_gt(img_path, gt_path, dataset_type):
+
+def get_img_and_gt(img_path, gt_path, dataset_type, min_crop_size=224, max_img_size=None):
     img = Image.open(img_path)
+
+    if img.mode == 'L':  # Black and white
+        img = img.convert('RGB')  # Colour
+
     img_w, img_h = img.size
 
-    den = gt_loaders[dataset_type](gt_path, img_w, img_h)
+    max_size = max(img_w, img_h)
+    # Insert downsizing here
+    assert max_img_size is None, 'Capping image size is not yet supported!'
+
+    scale = 1.
+    min_size = min(img_w, img_h)
+    if min_size < min_crop_size:  # E.g., SHTA has images with less than 224 pixels in some dims.
+        scale = min_crop_size / min_size
+        new_w = round(scale * img_w)
+        new_h = round(scale * img_h)
+        img = img.resize((new_w, new_h))
+        img_w, img_h = img.size
+
+    den = gt_loaders[dataset_type](gt_path, img_w, img_h, scale)
     den = den.astype(np.float32, copy=False)
     den = Image.fromarray(den)
 

@@ -2,19 +2,34 @@ from easydict import EasyDict as edict
 
 cfg_data = edict()
 
-cfg_data.TRAIN_BASE_PATHS = [
-    'D:\\ThesisData\\Datasets\\Arena 02',
-    'D:\\ThesisData\\Datasets\\Arena 03',
-    'D:\\ThesisData\\Datasets\\Arena 03',
-    'D:\\ThesisData\\Datasets\\Arena 03'
+cfg_data.TRAIN_DATASETS = [
+    {
+        'dataset_name': 'ShanghaiTech_Part_B',  # Only for informative prints
+        'den_gen_key': 'SHT',  # Which get_gt to use in density_generators.py
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # Where to find dataset
+        # Path to pickle file containing all the images and gts to use
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\train_split.pkl'
+    }
 ]
 
-cfg_data.VAL_BASE_PATHS = [
-    'D:\\ThesisData\\Datasets\\DAM_competition'
+cfg_data.VAL_DATASETS = [
+    {
+        'dataset_name': 'ShanghaiTech_Part_B',  # Only for informative prints
+        'den_gen_key': 'SHT',  # Which get_gt to use in density_generators.py
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # Where to find dataset
+        # Path to pickle file containing all the images and gts to use
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\val_split.pkl'
+    }
 ]
 
-cfg_data.TEST_BASE_PATHS = [
-    'D:\\ThesisData\\Datasets\\SHTB_STD'
+cfg_data.TEST_DATASETS = [
+    {
+        'dataset_name': 'ShanghaiTech_Part_B',  # Only for informative prints
+        'den_gen_key': 'SHT',  # Which get_gt to use in density_generators.py
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # Where to find dataset
+        # Path to pickle file containing all the images and gts to use
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\test_split.pkl'
+    }
 ]
 
 cfg_data.TRAIN_BS = 10

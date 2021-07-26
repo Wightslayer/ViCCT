@@ -2,17 +2,19 @@ import os
 
 import numpy as np
 import pandas as pd
+import pickle
 
 import torch
 from torch.utils import data
 
 from PIL import Image
 from .settings import cfg_data
+from datasets.density_generators import get_img_and_gt
 from datasets.dataset_utils import img_equal_split, img_equal_unsplit
 
 
 class Generic_ViCCT(data.Dataset):
-    def __init__(self, data_paths, mode, crop_size,
+    def __init__(self, datasets, mode, crop_size,
                  main_transform=None, img_transform=None, gt_transform=None, cropper=None):
 
         self.crop_size = crop_size  # 224
@@ -25,20 +27,31 @@ class Generic_ViCCT(data.Dataset):
 
         self.data_files = []
 
-        for data_path in data_paths:  # For each dataset
-            data_path = os.path.join(data_path, mode)  # dataset/train, dataset/val, or dataset/test
-            imgs_path = os.path.join(data_path, 'img')  # folder that has all the images
-            self.data_files += [(data_path, img_name) for img_name in os.listdir(imgs_path) if
-                                img_name.endswith('.jpg')]
+        print()  # Newline
+        print(f'Constructing combined {self.mode} dataset')
+        for dataset in datasets:
+            dataset_name = dataset['dataset_name']
+            base_path = dataset['dataset_path']
+            den_gen_key = dataset['den_gen_key']
+            data_split_path = dataset['split_to_use_path']
+            with open(data_split_path, 'rb') as f:
+                data_split = pickle.load(f)
+            for rel_img_path, rel_gt_path in data_split:
+                abs_img_path = os.path.join(base_path, rel_img_path)
+                abs_gt_path = os.path.join(base_path, rel_gt_path)
+                self.data_files.append((abs_img_path, abs_gt_path, den_gen_key))
+
+            n_imgs = len(data_split)
+            print(f'  Added dataset "{dataset_name}" with {n_imgs} images')
 
         if not self.data_files:  # If we only have a train or test set, we can still initialize the dataloader.
             self.data_files = ['Dummy']  # Handy for testing on a separate test set that doesn't have a train set.
         self.num_samples = len(self.data_files)
 
         if self.data_files[0] == 'Dummy':
-            print(f'No {self.mode} images found in {len(data_paths)} datasets.')
+            print(f'No {self.mode} images found in {len(datasets)} datasets.')
         else:
-            print(f'{len(self.data_files)} {self.mode} images found in {len(data_paths)} datasets.')
+            print(f'{len(self.data_files)} {self.mode} images found in {len(datasets)} datasets.')
 
     def __getitem__(self, index):
         """ Get img and gt stored at index 'index' in data files. """
@@ -66,17 +79,8 @@ class Generic_ViCCT(data.Dataset):
         :return: image and gt density map as PIL Images
         """
 
-        data_path, img_name = self.data_files[index]
-        img_path = os.path.join(data_path, 'img', img_name)
-        den_path = os.path.join(data_path, 'den', img_name.replace('img_', 'den_').replace('.jpg', '.csv'))
-
-        img = Image.open(img_path)
-        if img.mode == 'L':  # Black and white
-            img = img.convert('RGB')  # Colour
-
-        den = pd.read_csv(den_path, header=None).values
-        den = den.astype(np.float32, copy=False)
-        den = Image.fromarray(den)
+        img_path, gt_path, get_gt_key = self.data_files[index]
+        img, den = get_img_and_gt(img_path, gt_path, get_gt_key)
 
         return img, den
 

@@ -37,7 +37,7 @@ def loading_data(crop_size):
         standard_transforms.ToPILImage()
     ])
 
-    train_set = Generic_ViCCT(cfg_data.TRAIN_BASE_PATHS, 'train', crop_size,
+    train_set = Generic_ViCCT(cfg_data.TRAIN_DATASETS, 'train', crop_size,
                               main_transform=train_main_transform,
                               img_transform=train_img_transform,
                               gt_transform=gt_transform,
@@ -47,7 +47,7 @@ def loading_data(crop_size):
                               num_workers=cfg_data.N_WORKERS,
                               shuffle=True, drop_last=True)
 
-    val_set = Generic_ViCCT(cfg_data.VAL_BASE_PATHS, 'val', crop_size,
+    val_set = Generic_ViCCT(cfg_data.VAL_DATASETS, 'val', crop_size,
                             main_transform=None,
                             img_transform=val_img_transform,
                             gt_transform=gt_transform,
@@ -57,7 +57,7 @@ def loading_data(crop_size):
                             num_workers=cfg_data.N_WORKERS,
                             shuffle=False, drop_last=False)
 
-    test_set = Generic_ViCCT(cfg_data.TEST_BASE_PATHS, 'test', crop_size,
+    test_set = Generic_ViCCT(cfg_data.TEST_DATASETS, 'test', crop_size,
                              main_transform=None,
                              img_transform=val_img_transform,
                              gt_transform=gt_transform,
