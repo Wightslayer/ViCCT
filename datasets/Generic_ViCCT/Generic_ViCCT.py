@@ -9,7 +9,7 @@ from torch.utils import data
 
 from PIL import Image
 from .settings import cfg_data
-from datasets.density_generators import get_img_and_gt
+from datasets.data_retriever_and_generator import get_img_and_gt
 from datasets.dataset_utils import img_equal_split, img_equal_unsplit
 
 

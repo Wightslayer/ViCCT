@@ -24,11 +24,11 @@ cfg_data.VAL_DATASETS = [
 
 cfg_data.TEST_DATASETS = [
     {
-        'dataset_name': 'ShanghaiTech_Part_B',  # Only for informative prints
+        'dataset_name': 'ShanghaiTech_Part_A',  # Only for informative prints
         'den_gen_key': 'SHT',  # Which get_gt to use in density_generators.py
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # Where to find dataset
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',  # Where to find dataset
         # Path to pickle file containing all the images and gts to use
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\test_split.pkl'
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\test_split.pkl'
     }
 ]
 
