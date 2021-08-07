@@ -34,24 +34,36 @@ class Generic_ViCCT(data.Dataset):
             base_path = dataset['dataset_path']
             den_gen_key = dataset['den_gen_key']
             data_split_path = dataset['split_to_use_path']
-            with open(data_split_path, 'rb') as f:
-                data_split = pickle.load(f)
-            for rel_img_path, rel_gt_path in data_split:
-                abs_img_path = os.path.join(base_path, rel_img_path)
-                abs_gt_path = os.path.join(base_path, rel_gt_path)
-                self.data_files.append((abs_img_path, abs_gt_path, den_gen_key))
+            data_split = pd.read_csv(data_split_path)
+            data_split = data_split.to_numpy()
 
-            n_imgs = len(data_split)
-            print(f'  Added dataset "{dataset_name}" with {n_imgs} images')
+            if 'n_copies' in dataset:
+                n_copies = dataset['n_copies']
+                for copy_number in range(n_copies):
+                    extended_name = dataset_name + '_copy' + str(copy_number + 1)
+                    self.add_dataset_to_data_files(extended_name, base_path, data_split, den_gen_key)
+            else:
+                self.add_dataset_to_data_files(dataset_name, base_path, data_split, den_gen_key)
 
         if not self.data_files:  # If we only have a train or test set, we can still initialize the dataloader.
-            self.data_files = ['Dummy']  # Handy for testing on a separate test set that doesn't have a train set.
+            self.data_files = [
+                ('Dummy', 'Dummy', 'Dummy')]  # Handy for testing on a separate test set that doesn't have a train set.
         self.num_samples = len(self.data_files)
 
         if self.data_files[0] == 'Dummy':
             print(f'No {self.mode} images found in {len(datasets)} datasets.')
         else:
             print(f'{len(self.data_files)} {self.mode} images found in {len(datasets)} datasets.')
+
+    def add_dataset_to_data_files(self, dataset_name, base_path, data_split, den_gen_key):
+
+        for rel_img_path, rel_gt_path in data_split:
+            abs_img_path = os.path.join(base_path, rel_img_path)
+            abs_gt_path = os.path.join(base_path, rel_gt_path)
+            self.data_files.append((abs_img_path, abs_gt_path, den_gen_key))
+
+        n_imgs = len(data_split)
+        print(f'  Added dataset "{dataset_name}" with {n_imgs} images')
 
     def __getitem__(self, index):
         """ Get img and gt stored at index 'index' in data files. """

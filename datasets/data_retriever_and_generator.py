@@ -155,6 +155,7 @@ def get_gt_WorldExpo(gt_path, img_w, img_h, scaling=1., sigma=4):
 def municipality_csv_to_points(gt_path):
     """ GT annotations of the Municipality datasets are provided in CSV files. This function retrieves
     the point annotation from such a file."""
+
     annotations = pd.read_csv(gt_path)
     xs = annotations['x'].tolist()
     ys = annotations['y'].tolist()

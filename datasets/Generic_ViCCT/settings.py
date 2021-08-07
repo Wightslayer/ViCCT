@@ -38,23 +38,7 @@ cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how 
 #  Municipality':       Most/All municipality datasets
 
 
-def oversample_generator(dataset_name, den_gen_key, dataset_path, split_to_use_path, n_copies):
-    """ We might wish to add a dataset multiple times to, e.g., the training data. Instead of manually /c
-        /v the dataset info below, this function generates n copies in a list.
-        Append the return of this function to the cfg_data dataset list.
-        (e.g. cfg_data.TRAIN_DATASETS = [ ... ] + oversample_generator(...))"""
 
-    dupes = []
-    for i in range(n_copies):
-        dataset_dupe = {}
-        dataset_dupe['dataset_name'] = dataset_name + '_copy_' + str(i + 1)
-        dataset_dupe['den_gen_key'] = den_gen_key
-        dataset_dupe['dataset_path'] = dataset_path
-        dataset_dupe['split_to_use_path'] = split_to_use_path
-
-        dupes.append(dataset_dupe)
-
-    return dupes
 
 
 # =========================================================================== #
@@ -64,16 +48,12 @@ cfg_data.TRAIN_DATASETS = [
     {
         'dataset_name': 'ShanghaiTech_Part_B',
         'den_gen_key': 'SHT',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\train_split.pkl'
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # TODO: change for linux chads
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\train_split.csv',
+        'n_copies': 3,  # TODO: support this
+        'percentage or something': None# TODO: Support this
     }
-] + oversample_generator(
-    dataset_name='ShanghaiTech_Part_B',
-    den_gen_key='SHT',
-    dataset_path='D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',
-    split_to_use_path='D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\train_split.pkl',
-    n_copies=10
-)
+]
 
 
 # =========================================================================== #
@@ -84,7 +64,7 @@ cfg_data.VAL_DATASETS = [
         'dataset_name': 'ShanghaiTech_Part_B',
         'den_gen_key': 'SHT',
         'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\val_split.pkl'
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\val_split.csv'
     }
 ]
 
@@ -92,10 +72,18 @@ cfg_data.VAL_DATASETS = [
 #                                TESTING DATA SPLIT                           #
 # =========================================================================== #
 cfg_data.TEST_DATASETS = [
+    # {
+    #     'dataset_name': 'ShanghaiTech_Part_A',
+    #     'den_gen_key': 'SHT',
+    #     'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',
+    #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\test_split.pkl'
+    # }
     {
-        'dataset_name': 'ShanghaiTech_Part_A',
-        'den_gen_key': 'SHT',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\test_split.pkl'
+        'dataset_name': 'Muni',
+        'den_gen_key': 'Municipality',
+        'dataset_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020',  # TODO: change for linux chads
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020\\test_split.csv',
+        # 'n_copies': 1,  # TODO: support this
+        # 'percentage or something': None  # TODO: Support this
     }
 ]

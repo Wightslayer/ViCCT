@@ -37,6 +37,10 @@ def loading_data(crop_size):
         standard_transforms.ToPILImage()
     ])
 
+# ===================================================================== #
+#                              TRAIN DATALOADER                         #
+# ===================================================================== #
+
     train_set = Generic_ViCCT(cfg_data.TRAIN_DATASETS, 'train', crop_size,
                               main_transform=train_main_transform,
                               img_transform=train_img_transform,
@@ -47,6 +51,9 @@ def loading_data(crop_size):
                               num_workers=cfg_data.N_WORKERS,
                               shuffle=True, drop_last=True)
 
+# ===================================================================== #
+#                               VAL DATALOADER                          #
+# ===================================================================== #
     val_set = Generic_ViCCT(cfg_data.VAL_DATASETS, 'val', crop_size,
                             main_transform=None,
                             img_transform=val_img_transform,
@@ -57,6 +64,9 @@ def loading_data(crop_size):
                             num_workers=cfg_data.N_WORKERS,
                             shuffle=False, drop_last=False)
 
+# ===================================================================== #
+#                              TEST DATALOADER                          #
+# ===================================================================== #
     test_set = Generic_ViCCT(cfg_data.TEST_DATASETS, 'test', crop_size,
                              main_transform=None,
                              img_transform=val_img_transform,
