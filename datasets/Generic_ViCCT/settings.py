@@ -4,7 +4,7 @@ cfg_data = edict()
 
 cfg_data.TRAIN_BS = 10  # How many crops per training step. Each crop is taken from a separate image.
 cfg_data.VAL_BS = 1  # Must be 1
-cfg_data.N_WORKERS = 4  # Number of workers for the PyTorch dataloader
+cfg_data.N_WORKERS = 0  # Number of workers for the PyTorch dataloader
 
 cfg_data.MEAN_STD = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # From ImageNet
 cfg_data.LABEL_FACTOR = 3000  # Scale each pixel in the GT density maps by this value
@@ -50,8 +50,22 @@ cfg_data.TRAIN_DATASETS = [
         'den_gen_key': 'SHT',
         'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # TODO: change for linux chads
         'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\train_split.csv',
-        'n_copies': 3,  # TODO: support this
-        'percentage or something': None# TODO: Support this
+        'n_copies': 90,  # TODO: support this
+        # 'percentage or something': None# TODO: Support this
+    },
+    {
+        'dataset_name': 'ShanghaiTech_Part_A_10_percent',
+        'den_gen_key': 'SHT',
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',  # TODO: change for linux chads
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\train_split.csv',
+        'percent_of_split': 10
+    },
+    {
+        'dataset_name': 'ShanghaiTech_Part_A_5_percent',
+        'den_gen_key': 'SHT',
+        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',  # TODO: change for linux chads
+        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\train_split.csv',
+        'percent_of_split': 5
     }
 ]
 
@@ -60,12 +74,12 @@ cfg_data.TRAIN_DATASETS = [
 #                              VALIDATION DATA SPLIT                          #
 # =========================================================================== #
 cfg_data.VAL_DATASETS = [
-    {
-        'dataset_name': 'ShanghaiTech_Part_B',
-        'den_gen_key': 'SHT',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\val_split.csv'
-    }
+    # {
+    #     'dataset_name': 'ShanghaiTech_Part_B',
+    #     'den_gen_key': 'SHT',
+    #     'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',
+    #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\val_split.csv'
+    # }
 ]
 
 # =========================================================================== #
@@ -78,12 +92,13 @@ cfg_data.TEST_DATASETS = [
     #     'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',
     #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\test_split.pkl'
     # }
-    {
-        'dataset_name': 'Muni',
-        'den_gen_key': 'Municipality',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020',  # TODO: change for linux chads
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020\\test_split.csv',
-        # 'n_copies': 1,  # TODO: support this
-        # 'percentage or something': None  # TODO: Support this
-    }
+    # {
+    #     'dataset_name': 'Muni',
+    #     'den_gen_key': 'Municipality',
+    #     'dataset_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020',  # TODO: change for linux chads
+    #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020\\test_split.csv',
+    #     # 'n_copies': 1,  # TODO: support this
+    #     # 'percentage or something': None  # TODO: Support this
+    #     'percent_of_split': 10,
+    # }
 ]
