@@ -1,4 +1,5 @@
 from easydict import EasyDict as edict
+import os
 
 cfg_data = edict()
 
@@ -25,6 +26,9 @@ cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how 
 #                  Supported datasets with their keys are provided below
 #     dataset_path: The location where the dataset is stored
 #     split_to_use_path: The location where the relative paths of the images and annotations are stored
+#     n_copies: (Optional) How many times to add this specific dataset. Cannot be used together with 'percent_of_split'
+#     percent_of_split: (Optional) When specified, this dataset will be copied dynamically such that it
+#                       is approximately X% of the split. Cannot be used together with 'n_copies'
 # }
 
 # Supported datasets and their keys:
@@ -48,24 +52,38 @@ cfg_data.TRAIN_DATASETS = [
     {
         'dataset_name': 'ShanghaiTech_Part_B',
         'den_gen_key': 'SHT',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',  # TODO: change for linux chads
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\train_split.csv',
-        'n_copies': 90,  # TODO: support this
-        # 'percentage or something': None# TODO: Support this
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B', 'train_and_val_split.csv'),
     },
     {
-        'dataset_name': 'ShanghaiTech_Part_A_10_percent',
+        'dataset_name': 'ShanghaiTech_Part_A',
         'den_gen_key': 'SHT',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',  # TODO: change for linux chads
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\train_split.csv',
-        'percent_of_split': 10
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A', 'train_and_val_split.csv'),
     },
     {
-        'dataset_name': 'ShanghaiTech_Part_A_5_percent',
-        'den_gen_key': 'SHT',
-        'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',  # TODO: change for linux chads
-        'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\train_split.csv',
-        'percent_of_split': 5
+        'dataset_name': 'LSTN_FDST',
+        'den_gen_key': 'LSTN_FDST',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'LSTN_FDST_DATASET'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'LSTN_FDST_DATASET', 'train_and_val_split.csv'),
+    },
+    {
+        'dataset_name': 'JHU-Crowd++',
+        'den_gen_key': 'JHU_CROWD_PlusPlus',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'JHU-CROWD++'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'JHU-CROWD++', 'train_and_val_split.csv'),
+    },
+    {
+        'dataset_name': 'NWPU-Crowd',
+        'den_gen_key': 'LSTN_FDST',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'NWPU-Crowd'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'NWPU-Crowd', 'train_and_val_split.csv'),
+    },
+    {
+        'dataset_name': 'UCF-QNRF_ECCV18',
+        'den_gen_key': 'UCF_QNRF_ECCV18',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18', 'train_and_val_split.csv'),
     }
 ]
 
@@ -74,31 +92,23 @@ cfg_data.TRAIN_DATASETS = [
 #                              VALIDATION DATA SPLIT                          #
 # =========================================================================== #
 cfg_data.VAL_DATASETS = [
-    # {
-    #     'dataset_name': 'ShanghaiTech_Part_B',
-    #     'den_gen_key': 'SHT',
-    #     'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B',
-    #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_B\\val_split.csv'
-    # }
+    # Val split also in training data (train_and_val_split), thus not fair indicator of performance.
+    {
+        'dataset_name': 'ShanghaiTech_Part_B',
+        'den_gen_key': 'SHT',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B', 'val_split.csv'),
+    }
 ]
 
 # =========================================================================== #
 #                                TESTING DATA SPLIT                           #
 # =========================================================================== #
 cfg_data.TEST_DATASETS = [
-    # {
-    #     'dataset_name': 'ShanghaiTech_Part_A',
-    #     'den_gen_key': 'SHT',
-    #     'dataset_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A',
-    #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\ShanghaiTech\\part_A\\test_split.pkl'
-    # }
-    # {
-    #     'dataset_name': 'Muni',
-    #     'den_gen_key': 'Municipality',
-    #     'dataset_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020',  # TODO: change for linux chads
-    #     'split_to_use_path': 'D:\\ThesisData\\Datasets\\Municipality\\Vondelpark_8_10May2020\\test_split.csv',
-    #     # 'n_copies': 1,  # TODO: support this
-    #     # 'percentage or something': None  # TODO: Support this
-    #     'percent_of_split': 10,
-    # }
+    {
+        'dataset_name': 'MT_PicNic',
+        'den_gen_key': 'Municipality',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'MT_PicNic_SunnyDaysMay'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'MT_PicNic_SunnyDaysMay', 'test_split.csv'),
+    }
 ]
