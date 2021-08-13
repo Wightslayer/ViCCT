@@ -49,6 +49,9 @@ class Generic_ViCCT(data.Dataset):
         dynamic_datasets = []  # These are the datasets that should occupy X% of the samples
         percentage_dynamic = 0
         for dataset in datasets:
+            assert 'percent_of_split' not in dataset or 'n_copies' not in dataset, \
+                'percent_of_split and n_copies cannot be used together!'
+
             if 'percent_of_split' in dataset:
                 dynamic_datasets.append(dataset)
                 percentage_dynamic += dataset['percent_of_split']

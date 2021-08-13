@@ -26,8 +26,9 @@ cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how 
 #                  Supported datasets with their keys are provided below
 #     dataset_path: The location where the dataset is stored
 #     split_to_use_path: The location where the relative paths of the images and annotations are stored
-#     n_copies: (Optional) How many times to add this specific dataset. Cannot be used together with 'percent_of_split'
-#     percent_of_split: (Optional) When specified, this dataset will be copied dynamically such that it
+#     n_copies: (Optional, int) How many times to add this specific dataset.
+#               Cannot be used together with 'percent_of_split'
+#     percent_of_split: (Optional, int/float) When specified, this dataset will be copied dynamically such that it
 #                       is approximately X% of the split. Cannot be used together with 'n_copies'
 # }
 
