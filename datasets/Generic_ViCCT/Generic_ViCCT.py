@@ -22,32 +22,37 @@ def get_n_items_in_split(dataset):
 
 
 class Generic_ViCCT(data.Dataset):
+    """ The dataset for the dataloader. Supports a large multitude of datasets."""
     def __init__(self, datasets, mode, crop_size,
                  main_transform=None, img_transform=None, gt_transform=None, cropper=None):
 
-        self.crop_size = crop_size  # 224
-        self.mode = mode  # train, test or eval
+        self.crop_size = crop_size  # The input size of the network. Usually 224
+        self.mode = mode  # train, test or val
 
+        # The transforms to apply to both the image and density map (e.g. random flipping)
         self.main_transform = main_transform
-        self.img_transform = img_transform
-        self.gt_transform = gt_transform
-        self.cropper = cropper
+        self.img_transform = img_transform  # Image specific transform (e.g. gamma transform)
+        self.gt_transform = gt_transform  # GT specific transform (e.g. label scaling)
+        self.cropper = cropper  # Takes crops for training
 
+        # Here, all the links and info to make GT density maps will be stored.
+        # This is what the dataloader will request with __getitem__
         self.data_files = []
 
-        # A split can have to elements. Add a dummy item so that dataloader can be created.
+        # A split can have no elements. Add a dummy item so that dataloader can be created.
+        # Handy for testing on a separate test set that doesn't have a train set.
         if len(datasets) == 0:
             self.data_files = [
-                ('Dummy', 'Dummy', 'Dummy')]  # Handy for testing on a separate test set that doesn't have a train set
+                ('Dummy', 'Dummy', 'Dummy')]
             print(f'No items added for {mode} split.')
             self.num_samples = 0
             return
 
         print(f'Constructing the {mode} split:')
 
-        static_datasets = []
-        dynamic_datasets = []  # These are the datasets that should occupy X% of the samples
-        percentage_dynamic = 0
+        static_datasets = []  # Datasets without 'percent_of_split' specified.
+        dynamic_datasets = []  # These are the datasets that should occupy X% of the entire split.
+        percentage_dynamic = 0  # The total percentage of dynamic datasets.
         for dataset in datasets:
             assert 'percent_of_split' not in dataset or 'n_copies' not in dataset, \
                 'percent_of_split and n_copies cannot be used together!'
@@ -57,19 +62,19 @@ class Generic_ViCCT(data.Dataset):
                 percentage_dynamic += dataset['percent_of_split']
             else:
                 static_datasets.append(dataset)
-        percentage_static = 100 - percentage_dynamic
+        percentage_static = 100 - percentage_dynamic  # How much % is not dynamic.
 
         assert len(static_datasets) > 0, 'Must provide at least one non-dynamic dataset'
 
         # Add the non-dynamic datasets to the data files
         for dataset in static_datasets:
-            if 'n_copies' in dataset:
+            if 'n_copies' in dataset:  # If we should add the dataset multiple times
                 n_copies = dataset['n_copies']
             else:
-                n_copies = 1
-            self.add_dataset_to_data_files(dataset, n_copies)
+                n_copies = 1  # Otherwise, just add it once
+            self.add_dataset_to_data_files(dataset, n_copies)  # Add the items of the dataset to data_files
 
-        images_per_percent = len(self.data_files) / percentage_static
+        images_per_percent = len(self.data_files) / percentage_static  # Each percent is this many images
 
         for dataset in dynamic_datasets:
 
@@ -85,25 +90,26 @@ class Generic_ViCCT(data.Dataset):
             dataset_name = dataset['dataset_name']
             print(f'  <<<dataset {dataset_name} will be {actual_percentage:.3f}% of the whole split.>>>')
 
-            # Add the dataset n times to the datafiles to reach desired split
+            # Add the dataset n times to the datafiles to reach desired percentage of split
             self.add_dataset_to_data_files(dataset, n_copies)
 
-        self.num_samples = len(self.data_files)
+        self.num_samples = len(self.data_files)  # How many images there are in the entire split
         print(f'{len(self.data_files)} {self.mode} images found in {len(datasets)} datasets.')
 
     def add_dataset_to_data_files(self, dataset, n_copies):
         """ Adds a dataset to the data files. """
 
-        dataset_name = dataset['dataset_name']
-        base_path = dataset['dataset_path']
-        den_gen_key = dataset['den_gen_key']
-        data_split_path = dataset['split_to_use_path']
+        dataset_name = dataset['dataset_name']  # Name of the dataset for informative prints
+        base_path = dataset['dataset_path']  # Path where the dataset is stored
+        den_gen_key = dataset['den_gen_key']  # The key which specifies how to generate the GT density maps
+        data_split_path = dataset['split_to_use_path']  # The .csv files that contains the relative paths
         data_split = pd.read_csv(data_split_path)
         data_split = data_split.to_numpy()
 
-        if n_copies > 1:
+        if n_copies > 1:  # If we should add this dataset multiple times
             for copy_number in range(n_copies):
-                extended_name = dataset_name + '_copy' + str(copy_number + 1)
+                extended_name = dataset_name + '_copy' + str(copy_number + 1)  # Extend informative name
+                # Creates the absolute paths and adds these + den_gen_key to data_files.
                 self.make_all_links(extended_name, base_path, data_split, den_gen_key)
         else:
             self.make_all_links(dataset_name, base_path, data_split, den_gen_key)
@@ -121,23 +127,25 @@ class Generic_ViCCT(data.Dataset):
         print(f'  Added dataset "{dataset_name}" with {n_imgs} images')
 
     def __getitem__(self, index):
-        """ Get img and gt stored at index 'index' in data files. """
-        img, den = self.read_image_and_gt(index)
+        """ Get img and gt stored at index 'index' in data_files. """
 
-        if self.main_transform is not None:
+        # Reads the image and GT annotations from disk. Also generates the GT density map.
+        img, den = self.read_image_and_gt(index)  # Returns PIL images for both img and den
+
+        if self.main_transform is not None:  # Combined transform
             img, den = self.main_transform(img, den)
-        if self.img_transform is not None:
+        if self.img_transform is not None:  # Image transform
             img = self.img_transform(img)
-        if self.gt_transform is not None:
+        if self.gt_transform is not None:  # GT transform
             den = self.gt_transform(den)
 
-        if self.mode == 'train':
-            img_crop, den_crop = self.cropper(img, den.unsqueeze(0))
+        if self.mode == 'train':  # If we are training
+            img_crop, den_crop = self.cropper(img, den.unsqueeze(0))  # Just take a crop
             return img_crop, den_crop
-        else:
+        else:  # Val or test: Split the entire image and GT density map into crops
             img_stack = img_equal_split(img, self.crop_size, cfg_data.OVERLAP)
             gts_stack = img_equal_split(den.unsqueeze(0), self.crop_size, cfg_data.OVERLAP)
-            return img, img_stack, gts_stack
+            return img, img_stack, gts_stack  # Also return the entire image for img_h and img_w
 
     def read_image_and_gt(self, index):
         """
@@ -146,8 +154,8 @@ class Generic_ViCCT(data.Dataset):
         :return: image and gt density map as PIL Images
         """
 
-        img_path, gt_path, get_gt_key = self.data_files[index]
-        img, den = get_img_and_gt(img_path, gt_path, get_gt_key)
+        img_path, gt_path, get_gt_key = self.data_files[index]  # The paths on disk and how to generate the GT
+        img, den = get_img_and_gt(img_path, gt_path, get_gt_key)  # Read from disk and generate density map.
 
         return img, den
 
