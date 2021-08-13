@@ -18,11 +18,12 @@ def get_n_items_in_split(dataset):
 
     data_split_path = dataset['split_to_use_path']
     data_split = pd.read_csv(data_split_path)
-    return data_split.size
+    return len(data_split)
 
 
 class Generic_ViCCT(data.Dataset):
     """ The dataset for the dataloader. Supports a large multitude of datasets."""
+    
     def __init__(self, datasets, mode, crop_size,
                  main_transform=None, img_transform=None, gt_transform=None, cropper=None):
 
