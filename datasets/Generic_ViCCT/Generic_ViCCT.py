@@ -23,7 +23,7 @@ def get_n_items_in_split(dataset):
 
 class Generic_ViCCT(data.Dataset):
     """ The dataset for the dataloader. Supports a large multitude of datasets."""
-    
+
     def __init__(self, datasets, mode, crop_size,
                  main_transform=None, img_transform=None, gt_transform=None, cropper=None):
 
