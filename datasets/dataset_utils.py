@@ -4,41 +4,6 @@ import scipy.ndimage
 import numpy as np
 
 
-def generate_scaled_density(img, mat, sigma, scale):
-    """ Creates the ground-truth density map.
-        img: The image corresponding to the ground-truth annotations
-        mat: The coordinates of the annotations.
-        sigma: A constant sigma used for the gaussian filter.
-        scale: With what scale was img resised. """
-
-    w, h = img.size
-    k = np.zeros((h, w))
-
-    gt_points = mat["image_info"][0, 0][0, 0][0] * scale
-    for (x, y) in gt_points.astype(int):
-        if x < w and y < h:
-            k[y, x] = 1  # Note the order of x and y here. Height is stored in first dimension
-        else:
-            print("This should never happen!")  # This would mean a head is annotated outside the image.
-            print(x, y, w, h)
-
-    density = scipy.ndimage.filters.gaussian_filter(k, sigma, mode='constant', truncate=2)
-    return density
-
-
-def generate_density_municipality(img, gt_points, sigma):
-    w, h = img.size
-    k = np.zeros((h, w))
-
-    for (x, y, _) in gt_points.astype(int):
-        if x < w and y < h:
-            k[y, x] = 1  # Note the order of x and y here. Height is stored in first dimension\n",
-        else:
-            print("This should never happen!")  # This would mean a head is annotated outside the image.\n"
-    density = scipy.ndimage.filters.gaussian_filter(k, sigma, mode='constant')
-    return density
-
-
 def img_equal_split(img, crop_size, overlap):
     channels, h, w = img.shape
 
