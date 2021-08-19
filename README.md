@@ -19,6 +19,13 @@ To perform crowd counting with ViCCT, we first split an image of any resolution 
   * Starting a training run is done with [`main.py`](main.py)
 
 
+## How to use this repository
+First, the splits for the desired dataset(s) must be created. These are relative links to the images and GT annotations inside the folder of the dataset. Notebooks for commonly used datasets are provided in [`notebooks/Make_train_val_test_splits`](/notebooks/Make_train_val_test_splits).
+
+Next, the configurations of the training run must be specified in [`config.py`](config.py), and the settings for the dataset and dataloader must be specified in [`settings.py`](/datasets/Generic_ViCCT/settings.py) file. 
+
+Once configured, run [`main.py`](main.py).
+
 
 
 
