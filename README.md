@@ -12,6 +12,9 @@ To perform crowd counting with ViCCT, we first split an image of any resolution 
 
 * The structure of this repository is as follows:
   * The [`datasets`](/datasets) folder contains the ViCCT dataloader, including the code needed to load images from the disk and create the GT annotations. More information is provided in the README of the [`datasets`](/datasets) folder.
+  * [`models`](/models) contains the code for the ViCCT models.
+  * [`notebooks`](/notebooks) contains some usefull notebooks to create dataset splits (train/val/test), evaluate trained models, analyse datasets, and more.
+  * [`config.py`](.config.py) 
 
 
 
