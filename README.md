@@ -28,6 +28,15 @@ Once configured, run [`main.py`](main.py).
 
 
 
+# Acknowledgements
+
+The code in this repository is heavily inspired by, and uses parts of, the Crowd Counting Code Framework ([`C^3-Framework`](https://github.com/gjy3035/C-3-Framework)). I also use and extend the code from the DeiT [`repository`](https://github.com/facebookresearch/deit) repository for the ViCCT models.
+
+
+Important papers for this repository:
+ - C^3-Framework [`paper`](https://arxiv.org/abs/1907.02724)
+ - ViT [`paper`](https://arxiv.org/abs/2010.11929)
+ - DeiT [`paper`](https://arxiv.org/abs/2012.12877)
 
 
 
