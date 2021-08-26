@@ -15,7 +15,7 @@ cfg.SEED = 42  # Seed for reproducibility.
 # Select the model variant to use and which dataset to train it on.
 # The model must be selected from above (Valid_model_names) AND the dataset name MUST match the name in the dataset
 # folder. E.g. SHTB_DeiT to load SHTB for DeiT. Just SHTB does not work!
-cfg.MODEL = 'ViCCT_small'
+cfg.MODEL = 'ViCCT_base'
 cfg.DATASET = 'Generic_ViCCT'
 
 # Training parameters

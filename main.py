@@ -8,6 +8,8 @@ import os
 import models.ViCCT_models  # Needed to register models for 'create_model'
 from timm.models import create_model
 
+from models.ViCCT2_models import swin_small_patch4_window7_224
+
 import importlib
 
 from trainer import Trainer
@@ -79,14 +81,16 @@ def main(cfg):
     print(f"Creating model: {cfg.MODEL}")
 
     # Default settings from the original DeiT framework
-    model = create_model(  # From the timm library. This function created the model specific architecture.
-        cfg.MODEL,  # Which model to use (e.g. ViCCT_tiny, ViCCT_small, ViCCT_base).
-        init_path=model_mapping[cfg.MODEL],  # Where the pretrained weights of ImageNet are saved
-        num_classes=1000,  # Not used. But must match pretrained model!
-        drop_rate=0.,  # Dropout
-        drop_path_rate=0.,  # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'
-        drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
-    )
+    # model = create_model(  # From the timm library. This function created the model specific architecture.
+    #     cfg.MODEL,  # Which model to use (e.g. ViCCT_tiny, ViCCT_small, ViCCT_base).
+    #     init_path=model_mapping[cfg.MODEL],  # Where the pretrained weights of ImageNet are saved
+    #     num_classes=1000,  # Not used. But must match pretrained model!
+    #     drop_rate=0.,  # Dropout
+    #     drop_path_rate=0.,  # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'
+    #     drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
+    # )
+
+    model = swin_small_patch4_window7_224(pretrained=True)
 
     model.cuda()  # CPU training not supported.
 
