@@ -5,10 +5,12 @@ cfg_data = edict()
 
 cfg_data.TRAIN_BS = 10  # How many crops per training step. Each crop is taken from a separate image.
 cfg_data.VAL_BS = 1  # Must be 1
-cfg_data.N_WORKERS = 0  # Number of workers for the PyTorch dataloader
+cfg_data.N_WORKERS = 4  # Number of workers for the PyTorch dataloader
 
 cfg_data.MEAN_STD = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # From ImageNet
 cfg_data.LABEL_FACTOR = 3000  # Scale each pixel in the GT density maps by this value
+cfg_data.USE_GAMMA_TRANSFORM = False
+cfg_data.USE_GRAYSCALE_TRANSFORM = False
 
 cfg_data.OVERLAP = 8        # For test images, how much overlap should crops have
 cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how many pixels of edges of the crops
@@ -76,7 +78,7 @@ cfg_data.TRAIN_DATASETS = [
     },
     {
         'dataset_name': 'NWPU-Crowd',
-        'den_gen_key': 'LSTN_FDST',
+        'den_gen_key': 'NWPU_Crowd',
         'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'NWPU-Crowd'),
         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'NWPU-Crowd', 'train_and_val_split.csv'),
     },
@@ -107,9 +109,9 @@ cfg_data.VAL_DATASETS = [
 # =========================================================================== #
 cfg_data.TEST_DATASETS = [
     {
-        'dataset_name': 'MT_PicNic',
-        'den_gen_key': 'Municipality',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'MT_PicNic_SunnyDaysMay'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'MT_PicNic_SunnyDaysMay', 'test_split.csv'),
+        'dataset_name': 'SHTB',
+        'den_gen_key': 'SHT',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'part_B'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B', 'test_split.csv'),
     }
 ]

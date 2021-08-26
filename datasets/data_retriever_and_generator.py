@@ -18,7 +18,8 @@ def gen_scaled_den_from_points(width, height, gt_points, scale=1., sigma=4, trun
         if x < width and y < height:
             k[y, x] = 1  # Note the order of x and y here. Height is stored in first dimension
         else:  # Some datasets have fucked up annotation though. This might happen a lot!
-            print("This should never happen!")  # This would mean a head is annotated outside the image.
+            # print("This should never happen!")  # This would mean a head is annotated outside the image.
+            pass  # Some datasets just yolo their annotations, so this happens a lot actually :(
 
     density = scipy.ndimage.filters.gaussian_filter(k, sigma, mode='constant', truncate=truncate)  #
     return density

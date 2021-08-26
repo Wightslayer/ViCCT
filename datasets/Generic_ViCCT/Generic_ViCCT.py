@@ -25,7 +25,7 @@ class Generic_ViCCT(data.Dataset):
     """ The dataset for the dataloader. Supports a large multitude of datasets."""
 
     def __init__(self, datasets, mode, crop_size,
-                 main_transform=None, img_transform=None, gt_transform=None, cropper=None):
+                 main_transform=None, img_transform=None, gt_transform=None):
 
         self.crop_size = crop_size  # The input size of the network. Usually 224
         self.mode = mode  # train, test or val
@@ -34,7 +34,6 @@ class Generic_ViCCT(data.Dataset):
         self.main_transform = main_transform
         self.img_transform = img_transform  # Image specific transform (e.g. gamma transform)
         self.gt_transform = gt_transform  # GT specific transform (e.g. label scaling)
-        self.cropper = cropper  # Takes crops for training
 
         # Here, all the links and info to make GT density maps will be stored.
         # This is what the dataloader will request with __getitem__
@@ -141,8 +140,7 @@ class Generic_ViCCT(data.Dataset):
             den = self.gt_transform(den)
 
         if self.mode == 'train':  # If we are training
-            img_crop, den_crop = self.cropper(img, den.unsqueeze(0))  # Just take a crop
-            return img_crop, den_crop
+            return img, den.unsqueeze(0)  # Add a channel dimension for den
         else:  # Val or test: Split the entire image and GT density map into crops
             img_stack = img_equal_split(img, self.crop_size, cfg_data.OVERLAP)
             gts_stack = img_equal_split(den.unsqueeze(0), self.crop_size, cfg_data.OVERLAP)

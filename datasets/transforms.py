@@ -4,8 +4,6 @@ from PIL import Image
 import torch
 import torchvision.transforms as standard_transforms
 from skimage import exposure, img_as_float, img_as_ubyte
-from datasets.dataset_utils import generate_scaled_density
-import math
 
 
 class Compose(object):
@@ -49,23 +47,6 @@ class DeterministicHorizontallyFlip(object):
             return img.transpose(Image.FLIP_LEFT_RIGHT), den.transpose(Image.FLIP_LEFT_RIGHT), flip
         else:
             return img, den, flip
-
-
-class RandomScale(object):
-    def __call__(self, img, mat, den):
-        if random.random() < 1.:
-            w, h = img.size
-            scale = random.uniform(0.5, 1.5)
-            new_w = math.ceil(scale * w)
-            new_h = math.ceil(scale * h)
-
-            img = img.resize((new_w, new_h))
-
-            den = generate_scaled_density(img, mat, 4, scale)
-            den = den.astype(np.float32, copy=False)
-            den = Image.fromarray(den)
-
-        return img, den, None
 
 
 class RandomCrop(object):
