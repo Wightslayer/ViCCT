@@ -15,7 +15,7 @@ To perform crowd counting with ViCCT, we first split an image of any resolution 
   * [`models`](/models) contains the code for the ViCCT models.
   * [`notebooks`](/notebooks) contains some usefull notebooks to create dataset splits (train/val/test), evaluate trained models, analyse datasets, and more.
   * [`config.py`](config.py) contains the settings for a particular training run. Note that settings specific to the datasets and dataloader are specified in [`datasets/Generic_ViCCT`](/datasets/Generic_ViCCT).
-  * [`trainer.py`] contains the trainer class, based on the one from the [`C^3-Framework`](https://arxiv.org/abs/1907.02724), that trains a given ViCCT model.
+  * [`trainer.py`](trainer.py) contains the trainer class, based on the one from the [`C^3-Framework`](https://arxiv.org/abs/1907.02724), that trains a given ViCCT model.
   * Starting a training run is done with [`main.py`](main.py)
 
 
