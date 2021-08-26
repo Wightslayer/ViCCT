@@ -9,6 +9,6 @@ The [`Generic_ViCCT`](/Generic_ViCCT) directory contains the dataloader code and
 [`transforms.py`](transforms.py) contains some image and GT transformations for data augmentation.
 
 ## Configuring your dataloader
-In the [`Generic_ViCCT`](/Generic_ViCCT) folder, there are two files that must be modified for each run: 'setting.py' and 'loading_data.py'. In settings.py, the settings for the dataloader are set, as well as the specific datasets to use. In 'loading_data.py', one can specify which data-augmentations to use.
+To configure your dataloaders, you only need to modify 'settings.py' in the [`Generic_ViCCT`](/Generic_ViCCT) folder. Here, you can specify whether you want to use certain data-augmentation techniques, the batch size, which datasets to use for training/validation/testing, etc.
 
 
