@@ -58,7 +58,7 @@ def img_equal_unsplit(crops, overlap, ignore_buffer, img_h, img_w, img_channels)
     :param img_channels: Number of channels of the image. E.g. 3 for RGB, 1 for density maps.
     :return: The reconstructed image. Overlap is resolved by taking the average of overlapping pixels
     """
-    
+
     w, h = img_w, img_h
     crop_size = crops.shape[-1]
     n_cols = (w - crop_size) / (crop_size - overlap) + 1
