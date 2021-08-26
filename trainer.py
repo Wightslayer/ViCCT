@@ -23,8 +23,8 @@ class Trainer:
         """
 
         self.model = model
-        self.cfg = cfg
-        self.cfg_data = cfg_data
+        self.cfg = cfg  # General configuration of the run
+        self.cfg_data = cfg_data  # Configuration specific to the dataloaders
 
         # Loading data makes the dataloaders for the training set, validation set, and testing set.
         # Also returns the restore transform with which the the un-normalised image can be obtained.
@@ -253,7 +253,7 @@ class Trainer:
 
         torch.save(save_sate, save_name)
 
-    def load_state(self, state_path):
+    def load_state(self, state_path):  # Not supported yet!
         """ Loads the variables to continue training. """
 
         resume_state = torch.load(state_path)
