@@ -80,7 +80,7 @@ def main(cfg):
 
     # Default settings from the original DeiT framework
     model = create_model(  # From the timm library. This function created the model specific architecture.
-        cfg.MODEL,  # Which model to use (e.g. ViCCT tiny, ViCCT small, ViCCT base).
+        cfg.MODEL,  # Which model to use (e.g. ViCCT_tiny, ViCCT_small, ViCCT_base).
         init_path=model_mapping[cfg.MODEL],  # Where the pretrained weights of ImageNet are saved
         num_classes=1000,  # Not used. But must match pretrained model!
         drop_rate=0.,  # Dropout
