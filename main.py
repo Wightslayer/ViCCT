@@ -6,9 +6,10 @@ import torch.backends.cudnn as cudnn
 import os
 
 import models.ViCCT_models  # Needed to register models for 'create_model'
+import models.Swin_VICCT_models
 from timm.models import create_model
 
-from models.ViCCT2_models import swin_small_patch4_window7_224
+from misc.model_zoo_links import model_mappings
 
 import importlib
 
@@ -16,19 +17,6 @@ from trainer import Trainer
 from config import cfg
 from shutil import copyfile
 import random
-
-
-# We initialise the DeiT encoder part with pretrained weights. The ViCCT extension is randomly initialised.
-model_mapping = {
-    # 'deit_tiny_patch16_224': 'https://dl.fbaipublicfiles.com/deit/deit_tiny_patch16_224-a1311bcf.pth',
-    'ViCCT_tiny': 'https://dl.fbaipublicfiles.com/deit/deit_tiny_distilled_patch16_224-b40b3cf7.pth',
-    # 'deit_small_patch16_224': 'https://dl.fbaipublicfiles.com/deit/deit_small_patch16_224-cd65a155.pth',
-    'ViCCT_small': 'https://dl.fbaipublicfiles.com/deit/deit_small_distilled_patch16_224-649709d9.pth',
-    # 'deit_base_patch16_224': 'https://dl.fbaipublicfiles.com/deit/deit_base_patch16_224-b5f2ef4d.pth',
-    'ViCCT_base': 'https://dl.fbaipublicfiles.com/deit/deit_base_distilled_patch16_224-df68dfff.pth',
-    'ViCCT_base_384': 'https://dl.fbaipublicfiles.com/deit/deit_base_distilled_patch16_384-d0272ac0.pth',
-    'ViCCT_large': 'https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-vitjx/jx_vit_large_p16_224-4ee7a4dc.pth'
-}
 
 
 def make_save_dirs(loaded_cfg):
@@ -81,16 +69,17 @@ def main(cfg):
     print(f"Creating model: {cfg.MODEL}")
 
     # Default settings from the original DeiT framework
-    # model = create_model(  # From the timm library. This function created the model specific architecture.
-    #     cfg.MODEL,  # Which model to use (e.g. ViCCT_tiny, ViCCT_small, ViCCT_base).
-    #     init_path=model_mapping[cfg.MODEL],  # Where the pretrained weights of ImageNet are saved
-    #     num_classes=1000,  # Not used. But must match pretrained model!
-    #     drop_rate=0.,  # Dropout
-    #     drop_path_rate=0.,  # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'
-    #     drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
-    # )
+    model = create_model(  # From the timm library. This function created the model specific architecture.
+        cfg.MODEL,
+        init_path=model_mappings[cfg.MODEL],
+        pretrained_cc=False,
+        drop_rate=None if 'Swin' in cfg.MODEL else 0.,  # Dropout
 
-    model = swin_small_patch4_window7_224(pretrained=True)
+        # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'.
+        # Not yet sure what it is for the Swin version
+        drop_path_rate=None if 'Swin' in cfg.MODEL else 0.,
+        drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
+    )
 
     model.cuda()  # CPU training not supported.
 

@@ -18,7 +18,7 @@ from timm.models.layers import trunc_normal_
 # ]
 
 __all__ = [
-    'ViCCT_tiny', 'ViCCT_small', 'ViCCT_base', 'ViCCT_base_384', 'ViCCT_large'
+    'ViCCT_tiny', 'ViCCT_small', 'ViCCT_base', 'ViCCT_base_384'
 ]
 
 
@@ -43,7 +43,6 @@ class ViCCTRegressionHead(nn.Module):
             self.regression_head['lin_scaler'].apply(init_weights)
 
     def forward(self, pre_den):
-
         pre_den = self.regression_head['lin_scaler'](pre_den)
         pre_den = pre_den.transpose(1, 2)
         den = self.regression_head['folder'](pre_den)
@@ -147,34 +146,20 @@ class DistilledRegressionTransformer(VisionTransformer):
 # ======================================================================================================= #
 #                                               TINY MODEL                                                #
 # ======================================================================================================= #
-# @register_model
-# def deit_tiny_patch16_224(init_path=None, pretrained=False, **kwargs):
-#     model = RegressionTransformer(
-#         img_size=224, patch_size=16, embed_dim=192, depth=12, num_heads=3, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     model.default_cfg = _cfg()
-#     model.crop_size = 224
-#     model.n_patches = 14
-#
-#     if init_path:
-#         model = init_model_state(model, init_path)
-#
-#     model.remove_unused()
-#
-#     return model
-
 
 @register_model
-def ViCCT_tiny(init_path=None, pretrained=False, **kwargs):
+def ViCCT_tiny(init_path=None, pretrained=False, pretrained_cc=False, **kwargs):
     model = DistilledRegressionTransformer(
         img_size=224, patch_size=16, embed_dim=192, depth=12, num_heads=3, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
     model.default_cfg = _cfg()
     model.crop_size = 224
-    model.n_patches = 14
 
-    if init_path:
+    if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
+
+    if init_path and pretrained_cc:
+        model = load_pretrained(model, init_path)
 
     model.remove_unused()
 
@@ -185,34 +170,19 @@ def ViCCT_tiny(init_path=None, pretrained=False, **kwargs):
 #                                               SMALL MODEL                                               #
 # ======================================================================================================= #
 
-# @register_model
-# def deit_small_patch16_224(init_path=None, pretrained=False, **kwargs):
-#     model = RegressionTransformer(
-#         img_size=224, patch_size=16, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     model.default_cfg = _cfg()
-#     model.crop_size = 224
-#     model.n_patches = 14
-#
-#     if init_path:
-#         model = init_model_state(model, init_path)
-#
-#     model.remove_unused()
-#
-#     return model
-
-
 @register_model
-def ViCCT_small(init_path=None, pretrained=False, **kwargs):
+def ViCCT_small(init_path=None, pretrained_cc=False, **kwargs):
     model = DistilledRegressionTransformer(
         img_size=224, patch_size=16, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
     model.default_cfg = _cfg()
     model.crop_size = 224
-    model.n_patches = 14
 
-    if init_path:
+    if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
+
+    if init_path and pretrained_cc:
+        model = load_pretrained(model, init_path)
 
     model.remove_unused()
 
@@ -223,108 +193,63 @@ def ViCCT_small(init_path=None, pretrained=False, **kwargs):
 #                                               BASE MODEL                                                #
 # ======================================================================================================= #
 
-# @register_model
-# def deit_base_patch16_224(init_path=None, pretrained=False, **kwargs):
-#     model = RegressionTransformer(
-#         img_size=224, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     model.default_cfg = _cfg()
-#     model.crop_size = 224
-#     model.n_patches = 14
-#
-#     if init_path:
-#         model = init_model_state(model, init_path)
-#
-#     model.remove_unused()
-#
-#     return model
-
-
 @register_model
-def ViCCT_base(init_path=None, pretrained=False, **kwargs):
+def ViCCT_base(init_path=None, pretrained_cc=False, **kwargs):
     model = DistilledRegressionTransformer(
         img_size=224, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
     model.default_cfg = _cfg()
     model.crop_size = 224
-    model.n_patches = 14
 
-    if init_path:
+    if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
+
+    if init_path and pretrained_cc:
+        model = load_pretrained(model, init_path)
 
     model.remove_unused()
 
     return model
 
-# @register_model
-# def deit_base_patch16_384(init_path=None, pretrained=False, **kwargs):
-#     model = RegressionTransformer(
-#         img_size=384, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     model.default_cfg = _cfg()
-#     model.crop_size = 384
-#     model.n_patches = 24
-#
-#     if init_path:
-#         model = init_model_state(model, init_path)
-#
-#     model.remove_unused()
-#
-#     return model
-#
-#
-# @register_model
-# def deit_base_distilled_patch16_384(init_path=None, pretrained=False, **kwargs):
-#     model = DistilledRegressionTransformer(
-#         img_size=384, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
-#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-#     model.default_cfg = _cfg()
-#     model.crop_size = 384
-#     model.n_patches = 24
-#
-#     if init_path:
-#         model = init_model_state(model, init_path)
-#
-#     model.remove_unused()
-#
-#     return model
 
 @register_model
-def ViCCT_base_384(init_path=None, pretrained=False, **kwargs):
+def ViCCT_base_384(init_path=None, pretrained_cc=False, **kwargs):
     model = DistilledRegressionTransformer(
         img_size=384, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
     model.default_cfg = _cfg()
     model.crop_size = 384
-    model.n_patches = 24
 
-    if init_path:
+    if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
+
+    if init_path and pretrained_cc:
+        model = load_pretrained(model, init_path)
 
     model.remove_unused()
 
     return model
 
-# ======================================================================================================= #
-#                                              LARGE MODEL                                                #
-# ======================================================================================================= #
-@register_model
-def ViCCT_large(init_path=None, pretrained=False, **kwargs):
-    """ NOTE: THIS IS NOT THE FULL large MODEL!!!!"""
-    model = RegressionTransformer(
-        img_size=224, patch_size=16, embed_dim=1024, depth=12, num_heads=16, mlp_ratio=4, qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    model.default_cfg = _cfg()
-    model.crop_size = 224
-    model.n_patches = 14
 
-    if init_path:
-        model = init_model_state(model, init_path)
-
-    model.remove_unused()
-
-    return model
-
+# # ======================================================================================================= #
+# #                                              LARGE MODEL                                                #
+# # ======================================================================================================= #
+# Hacked version. Not official
+# @register_model
+# def ViCCT_large(init_path=None, pretrained=False, **kwargs):
+#     """ NOTE: THIS IS NOT THE FULL large MODEL!!!!"""
+#     model = RegressionTransformer(
+#         img_size=224, patch_size=16, embed_dim=1024, depth=12, num_heads=16, mlp_ratio=4, qkv_bias=True,
+#         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
+#     model.default_cfg = _cfg()
+#     model.crop_size = 224
+#
+#     if init_path:
+#         model = init_model_state(model, init_path)
+#
+#     model.remove_unused()
+#
+#     return model
 
 
 # ======================================================================================================= #
@@ -350,5 +275,13 @@ def init_model_state(model, init_path):
         else:
             print(f'key {key} not in model!')
     model.load_state_dict(modified_model_state)
+
+    return model
+
+
+def load_pretrained(model, init_path):
+    """ Loads a pretrained crowd counting network. """
+    resume_state = torch.load(init_path)
+    model.load_state_dict(resume_state['net'])
 
     return model
