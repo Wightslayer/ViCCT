@@ -46,13 +46,9 @@ class Trainer:
 
         self.writer = SummaryWriter(cfg.SAVE_DIR)  # For logging. We store vars like training/validation MAE and MSE.
 
-        if cfg.RESUME:  # Should we resume training?
-            self.load_state(cfg.RESUME_PATH)  # This loads and overwrites some important variables to continue training.
-            print(f'Resuming from epoch {self.epoch}')
-        else:
-            # During evaluation we can save example predictions. This function save the corresponding images and GTs.
+        if self.val_samples > 1:  # TODO: dataloader has dummy variable if no items found. Thus we have 1 here. pls fix
             self.save_eval_pics()
-            self.writer.add_scalar('lr', self.scheduler.get_last_lr()[0], self.epoch)  # Log the current LR.
+        self.writer.add_scalar('lr', self.scheduler.get_last_lr()[0], self.epoch)  # Log the current LR.
 
     def train(self):
         """ Trains the model.
@@ -92,9 +88,9 @@ class Trainer:
                     self.best_mae = MAE
                     self.best_epoch = self.epoch
                     print_fancy_new_best_MAE()  # Super important. Gotta get that dopamine!
-                    self.save_state(f'new_best_MAE_{MAE:.3f}')  # Save all states needed to continue training the model
+                    self.save_weights(f'new_best_MAE_{MAE:.3f}')  # Save all states needed to continue training the model
                 elif self.epoch % self.cfg.SAVE_EVERY == 0:  # save the state every 'SAVE_EVERY' regardless of the MAE
-                    self.save_state(f'MAE_{MAE:.3f}')
+                    self.save_weights(f'MAE_{MAE:.3f}')
 
                 # Informative print
                 print(f'MAE: {MAE:.3f}, MSE: {MSE:.3f}. best MAE: {self.best_mae:.3f} at ep({self.best_epoch}).'
@@ -109,6 +105,8 @@ class Trainer:
                 self.scheduler.step()  # Make one update
                 print(f'Learning rate adjusted to {self.scheduler.get_last_lr()[0]} at epoch {self.epoch}.')
                 self.writer.add_scalar('lr', self.scheduler.get_last_lr()[0], self.epoch)
+
+            self.save_state('latest_state.pth')  # Save state for if we later want to continue training from this point.
 
     def run_epoch(self):
         """ Run one pass over the train dataloader. """
@@ -233,19 +231,19 @@ class Trainer:
             write = csv.writer(f)
             write.writerows(list(zip(np.arange(len(data_files)), data_files)))  # each element is (idx, img_path)
 
-    def save_state(self, name_extra=''):
+    def save_state(self, save_name):
         """ Saves the variables needed to continue training later. """
 
-        if name_extra:  # Sometimes, we want to manually add some extra info. E.g. when new best MAE
-            save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}_{name_extra}.pth'
-        else:
-            save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}.pth'
+        # if name_extra:  # Sometimes, we want to manually add some extra info. E.g. when new best MAE
+        #     save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}_{name_extra}.pth'
+        # else:
+        #     save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}.pth'
 
         save_sate = {
             'epoch': self.epoch,  # Current epoch
             'best_epoch': self.best_epoch,  # Epoch where we got the best MAE
             'best_mae': self.best_mae,  # Best MAE so far
-            'net': self.model.state_dict(),  # The entire network
+            'state_dict': self.model.state_dict(),  # The entire network
             'optim': self.optim.state_dict(),  # The optimiser used to train the model. Is needed for Adam momentum etc.
             'scheduler': self.scheduler.state_dict(),  # Learning rate scheduler
             'save_dir_path': self.cfg.SAVE_DIR,  # Where to save evaluation predictions, save state, etc.
@@ -253,17 +251,30 @@ class Trainer:
 
         torch.save(save_sate, save_name)
 
-    def load_state(self, state_path):  # Not supported yet!
-        """ Loads the variables to continue training. """
+    def save_weights(self, name_suffix):
 
-        resume_state = torch.load(state_path)
-        self.epoch = resume_state['epoch']
-        self.best_epoch = resume_state['best_epoch']
-        self.best_mae = resume_state['best_mae']
+        if name_suffix:  # Sometimes, we want to manually add some extra info. E.g. when new best MAE
+            save_name = f'{self.cfg.STATE_DICTS_DIR}/weights_ep_{self.epoch}_{name_suffix}.pth'
+        else:
+            save_name = f'{self.cfg.STATE_DICTS_DIR}/weights_ep_{self.epoch}.pth'
 
-        self.model.load_state_dict(resume_state['net'])
-        self.optim.load_state_dict(resume_state['optim'])
-        self.scheduler.load_state_dict(resume_state['scheduler'])
+        save_sate = {
+            'state_dict': self.model.state_dict(),  # The entire network
+        }
+
+        torch.save(save_sate, save_name)
+
+    # def load_state(self, state_path):  # Not supported yet!
+    #     """ Loads the variables to continue training. """
+    #
+    #     resume_state = torch.load(state_path)
+    #     self.epoch = resume_state['epoch']
+    #     self.best_epoch = resume_state['best_epoch']
+    #     self.best_mae = resume_state['best_mae']
+    #
+    #     self.model.load_state_dict(resume_state['net'])
+    #     self.optim.load_state_dict(resume_state['optim'])
+    #     self.scheduler.load_state_dict(resume_state['scheduler'])
 
 
 def print_fancy_new_best_MAE():

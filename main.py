@@ -6,7 +6,7 @@ import torch.backends.cudnn as cudnn
 import os
 
 import models.ViCCT_models  # Needed to register models for 'create_model'
-import models.Swin_VICCT_models
+import models.Swin_ViCCT_models
 from timm.models import create_model
 
 from misc.model_zoo_links import model_mappings
@@ -33,31 +33,35 @@ def make_save_dirs(loaded_cfg):
         print('save directory already exists!')
 
 
+def backup_code(cfg):
+    base_dir = cfg.CODE_DIR
+    for dirpath, dirnames, filenames in os.walk('.'):
+        if '__pycache__' in dirpath or dirpath.startswith('.\.') or dirpath.startswith('.\\runs') or dirpath.startswith('.\\notebooks'):
+            continue
+
+        save_path = os.path.join(base_dir, dirpath)
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+
+        for f_name in filenames:
+            if f_name.endswith('.py'):
+                s_path = os.path.join(dirpath, f_name)
+                d_path = os.path.join(save_path, f_name)
+                copyfile(s_path, d_path)
+
+
 def main(cfg):
     """
     Main does the following
-    1) Creates the save directories when starting training. Loads the directory paths when continue straining
-        1.1) (new training only) Make a backup of some important files for archiving and reproducibility purposes.
+    1)
     2) Sets seeds for reproducibility
     3) Makes the model
     4) Gets the function with which the datloaders can be obtained. Also loads the dataset specific settings.
     5) Makes the trainer object for training and calls train to train the model (also when fine-tuning)
     Loads the settings and model, then creates a trainer with which the model is trained."""
 
-    if cfg.RESUME:  # Not fully tested yet
-        module = importlib.import_module(cfg.RESUME_DIR.replace(os.sep, '.') + 'code.config')
-        cfg = module.cfg
-    else:  # Make a backup of some important files for archiving purposes.
-        make_save_dirs(cfg)  # The folders to categorize the files
-        copyfile('config.py', os.path.join(cfg.CODE_DIR, 'config.py'))
-        copyfile('trainer.py', os.path.join(cfg.CODE_DIR, 'trainer.py'))
-        copyfile('models/ViCCT_models.py', os.path.join(cfg.CODE_DIR, 'ViCCT_models.py'))
-        copyfile(os.path.join('datasets', cfg.DATASET, 'settings.py'),
-                 os.path.join(cfg.CODE_DIR, 'settings.py'))
-        copyfile(os.path.join('datasets', cfg.DATASET, 'loading_data.py'),
-                 os.path.join(cfg.CODE_DIR, 'loading_data.py'))
-        copyfile(os.path.join('datasets', cfg.DATASET, cfg.DATASET + '.py'),
-                 os.path.join(cfg.CODE_DIR, cfg.DATASET + '.py'))
+    make_save_dirs(cfg)  # The folders to categorize the files
+    backup_code(cfg)
 
     # Seeds for reproducibility
     torch.manual_seed(cfg.SEED)

@@ -12,8 +12,8 @@ cfg_data.LABEL_FACTOR = 3000  # Scale each pixel in the GT density maps by this 
 cfg_data.USE_GAMMA_TRANSFORM = True
 cfg_data.USE_GRAYSCALE_TRANSFORM = False
 
-cfg_data.OVERLAP = 8        # For test images, how much overlap should crops have
-cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how many pixels of edges of the crops
+cfg_data.OVERLAP = 20        # For test images, how much overlap should crops have
+cfg_data.IGNORE_BUFFER = 10  # When reconstructing the complete density map, how many pixels of edges of the crops
 #                             should be ignored. No pixels are ignored at the edges of the complete density map.
 
 

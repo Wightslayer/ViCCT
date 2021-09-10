@@ -31,6 +31,7 @@ def init_model_state(model, init_path):
 
 def load_pretrained(model, init_path):
     """ Loads a pretrained crowd counting network. """
+
     resume_state = torch.load(init_path)
     model.load_state_dict(resume_state['net'])
 
