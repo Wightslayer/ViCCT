@@ -49,6 +49,28 @@ def backup_code(cfg):
                 d_path = os.path.join(save_path, f_name)
                 copyfile(s_path, d_path)
 
+def get_model(cfg):
+    print(f"Creating model: {cfg.MODEL}")
+
+    if cfg.PRETRAINED:
+        init_weights_location = cfg.PRETRAINED_WEIGHTS
+    else:
+        init_weights_location = model_mappings[cfg.MODEL]
+
+    # Default settings from the original DeiT framework
+    model = create_model(  # From the timm library. This function created the model specific architecture.
+        cfg.MODEL,
+        init_path=init_weights_location,
+        pretrained_cc=cfg.PRETRAINED,
+        drop_rate=None if 'Swin' in cfg.MODEL else 0.,  # Dropout
+
+        # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'.
+        # Not yet sure what it is for the Swin version
+        drop_path_rate=None if 'Swin' in cfg.MODEL else 0.,
+        drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
+    )
+
+    return model
 
 def main(cfg):
     """
@@ -70,21 +92,7 @@ def main(cfg):
 
     cudnn.benchmark = True  # Input to ViCCT is always of size batch_size x 224 x 224
 
-    print(f"Creating model: {cfg.MODEL}")
-
-    # Default settings from the original DeiT framework
-    model = create_model(  # From the timm library. This function created the model specific architecture.
-        cfg.MODEL,
-        init_path=model_mappings[cfg.MODEL],
-        pretrained_cc=False,
-        drop_rate=None if 'Swin' in cfg.MODEL else 0.,  # Dropout
-
-        # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'.
-        # Not yet sure what it is for the Swin version
-        drop_path_rate=None if 'Swin' in cfg.MODEL else 0.,
-        drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
-    )
-
+    model = get_model(cfg)  # Creates and initialises the model
     model.cuda()  # CPU training not supported.
 
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)

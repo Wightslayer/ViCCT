@@ -36,6 +36,9 @@ cfg.SAVE_EVERY = cfg.SAVE_EVERY_N_EVALS * cfg.EVAL_EVERY
 # I.e. with every evaluation, save this many predictions.
 cfg.SAVE_NUM_EVAL_EXAMPLES = 10
 
+cfg.PRETRAINED = False
+cfg.PRETRAINED_WEIGHTS = ''
+
 # ===================================================================================== #
 #                                 SAVE DIRECTORIES                                      #
 # ===================================================================================== #
