@@ -154,7 +154,9 @@ class Generic_ViCCT(data.Dataset):
         """
 
         img_path, gt_path, get_gt_key = self.data_files[index]  # The paths on disk and how to generate the GT
-        img, den = get_img_and_gt(img_path, gt_path, get_gt_key)  # Read from disk and generate density map.
+
+        # Read from disk and generate density map.
+        img, den = get_img_and_gt(img_path, gt_path, get_gt_key, min_crop_size=self.crop_size)
 
         return img, den
 
