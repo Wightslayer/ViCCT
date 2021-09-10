@@ -91,7 +91,7 @@ def Swin_ViCCT_small(init_path=None, pretrained_cc=False, **kwargs):
     """
 
     model_kwargs = dict(
-        patch_size=4, window_size=7, embed_dim=96, depths=(2, 2, 18, 2), num_heads=(3, 6, 12, 24), **kwargs)
+        patch_size=4, window_size=7, embed_dim=96, depths=(2, 2, 18), num_heads=(3, 6, 12), **kwargs)
 
     base_model = _create_swin_transformer('swin_small_patch4_window7_224', **model_kwargs)
 

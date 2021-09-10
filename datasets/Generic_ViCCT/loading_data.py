@@ -16,10 +16,10 @@ def loading_data(crop_size):
 
     train_transforms = []  # A list to which we append all transformations for images (for training only)
     if cfg_data.USE_GAMMA_TRANSFORM:  # If USE_GAMMA_TRANSFORM in settings.py is True
-        train_transforms.append(own_transforms.RandomGammaTransform)
+        train_transforms.append(own_transforms.RandomGammaTransform())
 
     if cfg_data.USE_GRAYSCALE_TRANSFORM:  # If USE_GRAYSCALE_TRANSFORM in settings.py is True
-        train_transforms.append(own_transforms.RandomGrayscale)
+        train_transforms.append(own_transforms.RandomGrayscale())
 
     train_transforms.append(standard_transforms.ToTensor())  # Transforms PIL image to PyTorch Tensor
     train_transforms.append(standard_transforms.Normalize(*cfg_data.MEAN_STD))  # Normalises the image
