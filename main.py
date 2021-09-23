@@ -34,6 +34,8 @@ def make_save_dirs(loaded_cfg):
 
 
 def backup_code(cfg):
+    """ Backup all python files in this working directory. """
+
     base_dir = cfg.CODE_DIR
     for dirpath, dirnames, filenames in os.walk('.'):
         if '__pycache__' in dirpath or dirpath.startswith('.\.') or dirpath.startswith('.\\runs') or dirpath.startswith('.\\notebooks'):
@@ -49,48 +51,62 @@ def backup_code(cfg):
                 d_path = os.path.join(save_path, f_name)
                 copyfile(s_path, d_path)
 
+
 def get_model(cfg):
+    """ Creates the ViCCT or Swin ViCCT model and initialises its weights. Returns that model."""
+
     print(f"Creating model: {cfg.MODEL}")
 
-    if cfg.PRETRAINED:
-        init_weights_location = cfg.PRETRAINED_WEIGHTS
+    if cfg.PRETRAINED:  # If we have a pretrained CROWD COUNTING model...
+        init_weights_location = cfg.PRETRAINED_WEIGHTS  # Use the specified path
     else:
-        init_weights_location = model_mappings[cfg.MODEL]
+        init_weights_location = model_mappings[cfg.MODEL]  # Use the default location for the specific model
 
-    # Default settings from the original DeiT framework
-    model = create_model(  # From the timm library. This function created the model specific architecture.
-        cfg.MODEL,
-        init_path=init_weights_location,
-        pretrained_cc=cfg.PRETRAINED,
-        drop_rate=None if 'Swin' in cfg.MODEL else 0.,  # Dropout
+    if 'Swin' in cfg.MODEL:  # Swin as the base
+        model = create_model(  # From the timm library. This function created the model specific architecture.
+            cfg.MODEL,
+            init_path=init_weights_location,
+            pretrained_cc=cfg.PRETRAINED,
+            drop_rate=None,  # Dropout
+            drop_path_rate=None,
+            drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
+        )
+    else:  # DeiT as the base
+        model = create_model(  # From the timm library. This function created the model specific architecture.
+            cfg.MODEL,
+            init_path=init_weights_location,
+            pretrained_cc=cfg.PRETRAINED,
+            drop_rate=0.,  # Dropout
 
-        # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'.
-        # Not yet sure what it is for the Swin version
-        drop_path_rate=None if 'Swin' in cfg.MODEL else 0.,
-        drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
-    )
+            # Bamboozled by Facebook. This isn't drop_path_rate, but rather 'drop_connect'.
+            # Not yet sure what it is for the Swin version
+            drop_path_rate=0.,
+            drop_block_rate=None,  # Drops our entire Transformer blocks I think? Not used for ViCCT.
+        )
 
     return model
+
 
 def main(cfg):
     """
     Main does the following
-    1)
+    1) Create directories where stuff for this run is saved
+    2) Makes a backup the code in this project
     2) Sets seeds for reproducibility
-    3) Makes the model
-    4) Gets the function with which the datloaders can be obtained. Also loads the dataset specific settings.
+    3) Makes and initialises the model
+    4) Gets the function with which the dataloaders can be obtained. Also loads the dataset specific settings.
     5) Makes the trainer object for training and calls train to train the model (also when fine-tuning)
     Loads the settings and model, then creates a trainer with which the model is trained."""
 
-    make_save_dirs(cfg)  # The folders to categorize the files
-    backup_code(cfg)
+    make_save_dirs(cfg)  # These are the folders where we backup the code, save images and the model weights.
+    backup_code(cfg)  # Make a backup of all code files
 
     # Seeds for reproducibility
     torch.manual_seed(cfg.SEED)
     np.random.seed(cfg.SEED)
     random.seed(cfg.SEED)
 
-    cudnn.benchmark = True  # Input to ViCCT is always of size batch_size x 224 x 224
+    cudnn.benchmark = True  # Input to ViCCT is always of size batch_size x crop_size x crop_size
 
     model = get_model(cfg)  # Creates and initialises the model
     model.cuda()  # CPU training not supported.

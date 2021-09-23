@@ -46,16 +46,19 @@ class Trainer:
 
         self.writer = SummaryWriter(cfg.SAVE_DIR)  # For logging. We store vars like training/validation MAE and MSE.
 
-        if self.val_samples > 1:  # TODO: dataloader has dummy variable if no items found. Thus we have 1 here. pls fix
+        if self.val_samples > 0:
             self.save_eval_pics()
+        else:
+            print(f'No validation dataset specified. Training will continue as normal but no validation is performed')
         self.writer.add_scalar('lr', self.scheduler.get_last_lr()[0], self.epoch)  # Log the current LR.
 
     def train(self):
         """ Trains the model.
         Also evaluates the model every 'EVAL_EVERY' epochs, and logs some informative metrics."""
 
-        MAE, MSE, avg_val_loss = self.evaluate_model()
-        print(f'Initial MAE: {MAE:.3f}, MSE: {MSE:.3f}, avg loss: {avg_val_loss:.3f}')
+        if self.val_samples > 0:
+            MAE, MSE, avg_val_loss = self.evaluate_model()
+            print(f'Initial MAE: {MAE:.3f}, MSE: {MSE:.3f}, avg loss: {avg_val_loss:.3f}')
 
         while self.epoch < self.cfg.MAX_EPOCH:  # Train for MAX_EPOCH epochs
             self.epoch += 1

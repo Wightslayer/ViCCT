@@ -14,16 +14,19 @@ cfg.SEED = 42  # Seed for reproducibility.
 # Select the model variant to use and which dataset to train it on.
 # The model must be selected from above AND the dataset name MUST match the name in the dataset
 # folder. E.g. SHTB_DeiT to load SHTB for DeiT. Just SHTB does not work!
-cfg.MODEL = 'Swin_ViCCT_small'
+cfg.MODEL = 'ViCCT_small'
 cfg.DATASET = 'Generic_ViCCT'
+
+# PRETRAINED is for if we want to load a pretrained CROWD COUNTING MODEL.
+# PRETRAINED_WEIGHTS is the path where these weights are stored.
+cfg.PRETRAINED = False
+cfg.PRETRAINED_WEIGHTS = 'D:\\OneDrive\\OneDrive - UvA\\ThesisData\\trained_models\\SWIN generic\\save_state_ep_400.pth'
 
 # Training parameters
 cfg.LR = 1e-4  # LR for meta learning in meta learning. Standard LR for standard learning
 cfg.LR_GAMMA = math.sqrt(0.1)  # Scale LR by this at each step in LR_STEP_EPCH
 cfg.LR_STEP_EPOCHS = [100, 500, 900]  # Make one step with the learning rate scheduler at these epochs
 cfg.WEIGHT_DECAY = 1e-5
-cfg.GRAD_CLIP_NORM = 1.  # Attempt to make meta-learning more stable. Set to None for no clipping
-
 
 cfg.MAX_EPOCH = 1300  # Train for this many epochs
 cfg.EVAL_EVERY = 10  # Eval the model on the evaluation set every 'EVAL_EVERY' epochs
@@ -36,8 +39,6 @@ cfg.SAVE_EVERY = cfg.SAVE_EVERY_N_EVALS * cfg.EVAL_EVERY
 # I.e. with every evaluation, save this many predictions.
 cfg.SAVE_NUM_EVAL_EXAMPLES = 10
 
-cfg.PRETRAINED = False
-cfg.PRETRAINED_WEIGHTS = ''
 
 # ===================================================================================== #
 #                                 SAVE DIRECTORIES                                      #

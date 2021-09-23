@@ -50,45 +50,45 @@ class ViCCTRegressionHead(nn.Module):
         return den
 
 
-class RegressionTransformer(VisionTransformer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.regression_head = ViCCTRegressionHead(kwargs['img_size'], kwargs['embed_dim'], self._init_weights)
-
-        self.alpha = None
-
-    def forward(self, x):
-        # taken from https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision_transformer.py
-        # Adjusted to do Crowd Counting regression
-
-        batch_size = x.shape[0]
-        x = self.patch_embed(x)
-
-        # This token has been stolen by a lot of people now
-        cls_tokens = self.cls_token.expand(batch_size, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
-        x = torch.cat((cls_tokens, x), dim=1)
-        x = x + self.pos_embed
-        x = self.pos_drop(x)
-
-        for blk in self.blocks:
-            x = blk(x)
-
-        pre_den = x[:, 1:]
-
-        den = self.regression_head(pre_den)
-
-        return den
-
-    def remove_unused(self):
-        self.norm = None
-        self.head = None
-
-    def make_alpha(self, alpha_init):
-        self.alpha = torch.nn.ParameterDict()
-        for k, v in self.state_dict().items():
-            alpha_value = torch.nn.Parameter(torch.zeros(v.shape, requires_grad=True) + alpha_init)
-            self.alpha[k.replace('.', '_')] = alpha_value
+# class RegressionTransformer(VisionTransformer):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#
+#         self.regression_head = ViCCTRegressionHead(kwargs['img_size'], kwargs['embed_dim'], self._init_weights)
+#
+#         self.alpha = None
+#
+#     def forward(self, x):
+#         # taken from https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision_transformer.py
+#         # Adjusted to do Crowd Counting regression
+#
+#         batch_size = x.shape[0]
+#         x = self.patch_embed(x)
+#
+#         # This token has been stolen by a lot of people now
+#         cls_tokens = self.cls_token.expand(batch_size, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
+#         x = torch.cat((cls_tokens, x), dim=1)
+#         x = x + self.pos_embed
+#         x = self.pos_drop(x)
+#
+#         for blk in self.blocks:
+#             x = blk(x)
+#
+#         pre_den = x[:, 1:]
+#
+#         den = self.regression_head(pre_den)
+#
+#         return den
+#
+#     def remove_unused(self):
+#         self.norm = None
+#         self.head = None
+#
+#     def make_alpha(self, alpha_init):
+#         self.alpha = torch.nn.ParameterDict()
+#         for k, v in self.state_dict().items():
+#             alpha_value = torch.nn.Parameter(torch.zeros(v.shape, requires_grad=True) + alpha_init)
+#             self.alpha[k.replace('.', '_')] = alpha_value
 
 
 class DistilledRegressionTransformer(VisionTransformer):
@@ -111,12 +111,6 @@ class DistilledRegressionTransformer(VisionTransformer):
         self.norm = None
         self.head = None
         self.head_dist = None
-
-    def make_alpha(self, alpha_init):
-        self.alpha = torch.nn.ParameterDict()
-        for k, v in self.state_dict().items():
-            alpha_values = torch.nn.Parameter(torch.zeros(v.shape, requires_grad=True) + alpha_init)
-            self.alpha[k.replace('.', '_')] = alpha_values
 
     def forward(self, x):
         # taken from https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision_transformer.py
@@ -144,11 +138,13 @@ class DistilledRegressionTransformer(VisionTransformer):
 
 
 # ======================================================================================================= #
-#                                               TINY MODEL                                                #
+#                                               THE MODELS                                                #
 # ======================================================================================================= #
 
 @register_model
-def ViCCT_tiny(init_path=None, pretrained=False, pretrained_cc=False, **kwargs):
+def ViCCT_tiny(init_path=None, pretrained_cc=False, **kwargs):
+    del kwargs['pretrained']  # We init later with init_path if pretrained_cc is false.
+
     model = DistilledRegressionTransformer(
         img_size=224, patch_size=16, embed_dim=192, depth=12, num_heads=3, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -166,12 +162,10 @@ def ViCCT_tiny(init_path=None, pretrained=False, pretrained_cc=False, **kwargs):
     return model
 
 
-# ======================================================================================================= #
-#                                               SMALL MODEL                                               #
-# ======================================================================================================= #
-
 @register_model
 def ViCCT_small(init_path=None, pretrained_cc=False, **kwargs):
+    del kwargs['pretrained']  # We init later with init_path if pretrained_cc is false.
+
     model = DistilledRegressionTransformer(
         img_size=224, patch_size=16, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -189,12 +183,10 @@ def ViCCT_small(init_path=None, pretrained_cc=False, **kwargs):
     return model
 
 
-# ======================================================================================================= #
-#                                               BASE MODEL                                                #
-# ======================================================================================================= #
-
 @register_model
 def ViCCT_base(init_path=None, pretrained_cc=False, **kwargs):
+    del kwargs['pretrained']  # We init later with init_path if pretrained_cc is false.
+
     model = DistilledRegressionTransformer(
         img_size=224, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -214,6 +206,8 @@ def ViCCT_base(init_path=None, pretrained_cc=False, **kwargs):
 
 @register_model
 def ViCCT_base_384(init_path=None, pretrained_cc=False, **kwargs):
+    del kwargs['pretrained']  # We init later with init_path if pretrained_cc is false.
+
     model = DistilledRegressionTransformer(
         img_size=384, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
@@ -231,9 +225,6 @@ def ViCCT_base_384(init_path=None, pretrained_cc=False, **kwargs):
     return model
 
 
-# # ======================================================================================================= #
-# #                                              LARGE MODEL                                                #
-# # ======================================================================================================= #
 # Hacked version. Not official
 # @register_model
 # def ViCCT_large(init_path=None, pretrained=False, **kwargs):
@@ -253,8 +244,9 @@ def ViCCT_base_384(init_path=None, pretrained_cc=False, **kwargs):
 
 
 # ======================================================================================================= #
-#                                             UTIL FUNCTIONS                                              #
+#                                     UTIL FUNCTIONS TO LOAD WEIGHTS                                      #
 # ======================================================================================================= #
+
 
 def init_model_state(model, init_path):
     if init_path.startswith('https'):

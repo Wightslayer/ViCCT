@@ -12,8 +12,8 @@ cfg_data.LABEL_FACTOR = 3000  # Scale each pixel in the GT density maps by this 
 cfg_data.USE_GAMMA_TRANSFORM = True
 cfg_data.USE_GRAYSCALE_TRANSFORM = False
 
-cfg_data.OVERLAP = 20        # For test images, how much overlap should crops have
-cfg_data.IGNORE_BUFFER = 10  # When reconstructing the complete density map, how many pixels of edges of the crops
+cfg_data.OVERLAP = 8        # For test images, how much overlap should crops have
+cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how many pixels of edges of the crops
 #                             should be ignored. No pixels are ignored at the edges of the complete density map.
 
 
@@ -95,13 +95,13 @@ cfg_data.TRAIN_DATASETS = [
 #                              VALIDATION DATA SPLIT                          #
 # =========================================================================== #
 cfg_data.VAL_DATASETS = [
-    # Val split also in training data (train_and_val_split), thus not fair indicator of performance.
-    {
-        'dataset_name': 'ShanghaiTech_Part_A',
-        'den_gen_key': 'SHT',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A', 'val_split.csv'),
-    }
+    # # Val split also in training data (train_and_val_split), thus not fair indicator of performance.
+    # {
+    #     'dataset_name': 'ShanghaiTech_Part_A',
+    #     'den_gen_key': 'SHT',
+    #     'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A'),
+    #     'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A', 'val_split.csv'),
+    # }
 ]
 
 # =========================================================================== #
@@ -109,13 +109,13 @@ cfg_data.VAL_DATASETS = [
 # =========================================================================== #
 # cfg_data.TEST_DATASETS = [
 #     {
-#         'dataset_name': '40 45',
+#         'dataset_name': 'VP',
 #         'den_gen_key': 'Municipality',
-#         'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', '40 45 FS'),
-#         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', '40 45 FS', 'train_and_val_split.csv'),
+#         'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020'),
+#         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020', 'val_split.csv'),
 #     }
 # ]
-a = 'Part_B'
+a = 'Part_A'
 cfg_data.TEST_DATASETS = [
     {
         'dataset_name': 'ShanghaiTech_' + a,
@@ -124,3 +124,13 @@ cfg_data.TEST_DATASETS = [
         'split_to_use_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a, 'test_split.csv'),
     }
 ]
+
+# cfg_data.TEST_DATASETS = [
+#     {
+#         'dataset_name': 'UCF-QNRF_ECCV18',
+#         'den_gen_key': 'UCF_QNRF_ECCV18',
+#         'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18'),
+#         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18',
+#                                           'test_split.csv'),
+#     }
+# ]

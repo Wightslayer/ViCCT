@@ -4,39 +4,9 @@ import torch.nn as nn
 from timm.models.registry import register_model
 
 
-def init_model_state(model, init_path):
-    if init_path.startswith('https'):
-        checkpoint = torch.hub.load_state_dict_from_url(
-            init_path, map_location='cpu', check_hash=True)
-    else:
-        checkpoint = torch.load(init_path, map_location='cpu')
-    if 'model' in checkpoint:
-        pretrained_state = checkpoint['model']
-    else:
-        pretrained_state = checkpoint
-        print('@'*1000)  # Does this still happen?
-
-    model_state_dict = model.state_dict()
-    # With this, we are able to load the pretrained modules while ignoring the new regression modules.
-    for key in list(model_state_dict.keys())[:-4]:  # Head and norm don't match when we remove last block
-        if key in pretrained_state:
-            model_state_dict[key] = pretrained_state[key]
-        else:
-            print(f'Key: {key} note in state dict!')
-
-    model.load_state_dict(model_state_dict)
-
-    return model
-
-
-def load_pretrained(model, init_path):
-    """ Loads a pretrained crowd counting network. """
-
-    resume_state = torch.load(init_path)
-    model.load_state_dict(resume_state['net'])
-
-    return model
-
+# ============================================================================================ #
+#                                     HEAD TO PERFORM REGRESSION                               #
+# ============================================================================================ #
 
 class ViCCTRegressionHead(nn.Module):
     #     def __init__(self, crop_size, embed_dim, init_weights=None):
@@ -72,6 +42,10 @@ class DistilledRegressionTransformer(nn.Module):
         den = self.regression_head(x)
         return den
 
+
+# ============================================================================================ #
+#                                           THE MODELS                                         #
+# ============================================================================================ #
 
 # def Swin_ViCCT_tiny(pretrained_path=None, **kwargs):
 #     """ Swin-T @ 224x224, trained ImageNet-1k
@@ -172,3 +146,41 @@ def Swin_ViCCT_large_22k(init_path=None, pretrained_cc=False, **kwargs):
     full_model.crop_size = 224
 
     return full_model
+
+
+# ============================================================================================ #
+#                               UTILITY FUNCTIONS TO LOAD WEIGHTS                              #
+# ============================================================================================ #
+
+def init_model_state(model, init_path):
+    if init_path.startswith('https'):
+        checkpoint = torch.hub.load_state_dict_from_url(
+            init_path, map_location='cpu', check_hash=True)
+    else:
+        checkpoint = torch.load(init_path, map_location='cpu')
+    if 'model' in checkpoint:
+        pretrained_state = checkpoint['model']
+    else:
+        pretrained_state = checkpoint
+        print('@'*1000)  # Does this still happen?
+
+    model_state_dict = model.state_dict()
+    # With this, we are able to load the pretrained modules while ignoring the new regression modules.
+    for key in list(model_state_dict.keys())[:-4]:  # Head and norm don't match when we remove last block
+        if key in pretrained_state:
+            model_state_dict[key] = pretrained_state[key]
+        else:
+            print(f'Key: {key} note in state dict!')
+
+    model.load_state_dict(model_state_dict)
+
+    return model
+
+
+def load_pretrained(model, init_path):
+    """ Loads a pretrained crowd counting network. """
+
+    resume_state = torch.load(init_path)
+    model.load_state_dict(resume_state['net'])
+
+    return model

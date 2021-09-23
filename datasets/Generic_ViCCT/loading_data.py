@@ -43,10 +43,10 @@ def loading_data(crop_size):
         standard_transforms.ToPILImage()
     ])
 
+
 # ===================================================================== #
 #                              TRAIN DATALOADER                         #
 # ===================================================================== #
-
     train_set = Generic_ViCCT(cfg_data.TRAIN_DATASETS, 'train', crop_size,
                               main_transform=train_main_transform,
                               img_transform=train_img_transform,
