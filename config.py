@@ -19,8 +19,9 @@ cfg.DATASET = 'Generic_ViCCT'
 
 # PRETRAINED is for if we want to load a pretrained CROWD COUNTING MODEL.
 # PRETRAINED_WEIGHTS is the path where these weights are stored.
-cfg.PRETRAINED = False
-cfg.PRETRAINED_WEIGHTS = 'D:\\OneDrive\\OneDrive - UvA\\ThesisData\\trained_models\\SWIN generic\\save_state_ep_400.pth'
+cfg.PRETRAINED = True
+# cfg.PRETRAINED_WEIGHTS = 'D:\\OneDrive\\OneDrive - UvA\\ThesisData\\trained_models\\SWIN generic\\save_state_ep_400.pth'
+cfg.PRETRAINED_WEIGHTS = 'D:\\OneDrive\\OneDrive - UvA\\ThesisData\\trained_models\\ViCCT small TL SHTB\\save_state_ep_840_new_best_MAE_8.063.pth'
 
 # Training parameters
 cfg.LR = 1e-4  # LR for meta learning in meta learning. Standard LR for standard learning

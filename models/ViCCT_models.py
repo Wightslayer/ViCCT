@@ -154,10 +154,10 @@ def ViCCT_tiny(init_path=None, pretrained_cc=False, **kwargs):
     if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
 
+    model.remove_unused()
+
     if init_path and pretrained_cc:
         model = load_pretrained(model, init_path)
-
-    model.remove_unused()
 
     return model
 
@@ -175,10 +175,10 @@ def ViCCT_small(init_path=None, pretrained_cc=False, **kwargs):
     if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
 
+    model.remove_unused()
+
     if init_path and pretrained_cc:
         model = load_pretrained(model, init_path)
-
-    model.remove_unused()
 
     return model
 
@@ -196,10 +196,10 @@ def ViCCT_base(init_path=None, pretrained_cc=False, **kwargs):
     if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
 
+    model.remove_unused()
+
     if init_path and pretrained_cc:
         model = load_pretrained(model, init_path)
-
-    model.remove_unused()
 
     return model
 
@@ -217,10 +217,10 @@ def ViCCT_base_384(init_path=None, pretrained_cc=False, **kwargs):
     if init_path and not pretrained_cc:
         model = init_model_state(model, init_path)
 
+    model.remove_unused()
+
     if init_path and pretrained_cc:
         model = load_pretrained(model, init_path)
-
-    model.remove_unused()
 
     return model
 
@@ -235,10 +235,10 @@ def ViCCT_base_384(init_path=None, pretrained_cc=False, **kwargs):
 #     model.default_cfg = _cfg()
 #     model.crop_size = 224
 #
+#     model.remove_unused()
+#
 #     if init_path:
 #         model = init_model_state(model, init_path)
-#
-#     model.remove_unused()
 #
 #     return model
 
