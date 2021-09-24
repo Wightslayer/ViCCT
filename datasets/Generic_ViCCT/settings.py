@@ -12,8 +12,8 @@ cfg_data.LABEL_FACTOR = 3000  # Scale each pixel in the GT density maps by this 
 cfg_data.USE_GAMMA_TRANSFORM = True
 cfg_data.USE_GRAYSCALE_TRANSFORM = False
 
-cfg_data.OVERLAP = 8        # For test images, how much overlap should crops have
-cfg_data.IGNORE_BUFFER = 4  # When reconstructing the complete density map, how many pixels of edges of the crops
+cfg_data.OVERLAP = 32        # For test images, how much overlap should crops have
+cfg_data.IGNORE_BUFFER = 16  # When reconstructing the complete density map, how many pixels of edges of the crops
 #                             should be ignored. No pixels are ignored at the edges of the complete density map.
 
 
@@ -115,15 +115,15 @@ cfg_data.VAL_DATASETS = [
 #         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020', 'val_split.csv'),
 #     }
 # ]
-a = 'Part_A'
-cfg_data.TEST_DATASETS = [
-    {
-        'dataset_name': 'ShanghaiTech_' + a,
-        'den_gen_key': 'SHT',
-        'dataset_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a),
-        'split_to_use_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a, 'test_split.csv'),
-    }
-]
+# a = 'Part_A'
+# cfg_data.TEST_DATASETS = [
+#     {
+#         'dataset_name': 'ShanghaiTech_' + a,
+#         'den_gen_key': 'SHT',
+#         'dataset_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a),
+#         'split_to_use_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a, 'test_split.csv'),
+#     }
+# ]
 
 # cfg_data.TEST_DATASETS = [
 #     {
@@ -134,3 +134,12 @@ cfg_data.TEST_DATASETS = [
 #                                           'test_split.csv'),
 #     }
 # ]
+
+cfg_data.TEST_DATASETS = [
+    {
+        'dataset_name': 'VP',
+        'den_gen_key': 'Municipality',
+        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020'),
+        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020', 'test_split.csv'),
+    }
+]

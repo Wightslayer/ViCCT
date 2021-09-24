@@ -63,6 +63,7 @@ class Trainer:
         while self.epoch < self.cfg.MAX_EPOCH:  # Train for MAX_EPOCH epochs
             self.epoch += 1
 
+            # <<<<<<<<<<<<<<<<<<<<   TRAINING PART >>>>>>>>>>>>>>>>>>>> #
             epoch_start_time = time.time()  # Time how long an epoch takes
             # MACE = Mean Absolute Crop Error.
             # MSCE = Mean Squared Crop Error.
@@ -81,7 +82,7 @@ class Trainer:
             self.writer.add_scalar('MAE/train', MACE, self.epoch)
             self.writer.add_scalar('MSE/train', MSCE, self.epoch)
 
-            # Evaluation
+            # <<<<<<<<<<<<<<<<<<<<   EVALUATION PART >>>>>>>>>>>>>>>>>>>> #
             if self.epoch % self.cfg.EVAL_EVERY == 0:  # Eval every 'EVAL_EVERY' epochs.
                 eval_start_time = time.time()  # Time how long evaluation takes
                 MAE, MSE, avg_val_loss = self.evaluate_model()
@@ -91,9 +92,7 @@ class Trainer:
                     self.best_mae = MAE
                     self.best_epoch = self.epoch
                     print_fancy_new_best_MAE()  # Super important. Gotta get that dopamine!
-                    self.save_weights(f'new_best_MAE_{MAE:.3f}')  # Save all states needed to continue training the model
-                elif self.epoch % self.cfg.SAVE_EVERY == 0:  # save the state every 'SAVE_EVERY' regardless of the MAE
-                    self.save_weights(f'MAE_{MAE:.3f}')
+                    self.save_weights(f'new_best_MAE_{MAE:.3f}')  # Save current best model weights
 
                 # Informative print
                 print(f'MAE: {MAE:.3f}, MSE: {MSE:.3f}. best MAE: {self.best_mae:.3f} at ep({self.best_epoch}).'
@@ -104,12 +103,16 @@ class Trainer:
                 self.writer.add_scalar('MAE/eval', MAE, self.epoch)
                 self.writer.add_scalar('MSE/eval', MSE, self.epoch)
 
+            # <<<<<<<<<<<<<<<<<<<<   MISC PART >>>>>>>>>>>>>>>>>>>> #
+            if self.epoch % self.cfg.SAVE_EVERY == 0:  # save the state every 'SAVE_EVERY' regardless of the MAE
+                self.save_weights()
+
             if self.epoch in self.cfg.LR_STEP_EPOCHS:  # Updates the learning rate
                 self.scheduler.step()  # Make one update
                 print(f'Learning rate adjusted to {self.scheduler.get_last_lr()[0]} at epoch {self.epoch}.')
                 self.writer.add_scalar('lr', self.scheduler.get_last_lr()[0], self.epoch)
 
-            self.save_state('latest_state.pth')  # Save state for if we later want to continue training from this point.
+            # self.save_state('latest_state.pth')  # Save state for if we later want to continue training from this point.
 
     def run_epoch(self):
         """ Run one pass over the train dataloader. """
@@ -234,27 +237,27 @@ class Trainer:
             write = csv.writer(f)
             write.writerows(list(zip(np.arange(len(data_files)), data_files)))  # each element is (idx, img_path)
 
-    def save_state(self, save_name):
-        """ Saves the variables needed to continue training later. """
+    # def save_state(self, save_name):
+    #     """ Saves the variables needed to continue training later. """
+    #
+    #     # if name_extra:  # Sometimes, we want to manually add some extra info. E.g. when new best MAE
+    #     #     save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}_{name_extra}.pth'
+    #     # else:
+    #     #     save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}.pth'
+    #
+    #     save_sate = {
+    #         'epoch': self.epoch,  # Current epoch
+    #         'best_epoch': self.best_epoch,  # Epoch where we got the best MAE
+    #         'best_mae': self.best_mae,  # Best MAE so far
+    #         'state_dict': self.model.state_dict(),  # The entire network
+    #         'optim': self.optim.state_dict(),  # The optimiser used to train the model. Is needed for Adam momentum etc.
+    #         'scheduler': self.scheduler.state_dict(),  # Learning rate scheduler
+    #         'save_dir_path': self.cfg.SAVE_DIR,  # Where to save evaluation predictions, save state, etc.
+    #     }
+    #
+    #     torch.save(save_sate, save_name)
 
-        # if name_extra:  # Sometimes, we want to manually add some extra info. E.g. when new best MAE
-        #     save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}_{name_extra}.pth'
-        # else:
-        #     save_name = f'{self.cfg.STATE_DICTS_DIR}/save_state_ep_{self.epoch}.pth'
-
-        save_sate = {
-            'epoch': self.epoch,  # Current epoch
-            'best_epoch': self.best_epoch,  # Epoch where we got the best MAE
-            'best_mae': self.best_mae,  # Best MAE so far
-            'state_dict': self.model.state_dict(),  # The entire network
-            'optim': self.optim.state_dict(),  # The optimiser used to train the model. Is needed for Adam momentum etc.
-            'scheduler': self.scheduler.state_dict(),  # Learning rate scheduler
-            'save_dir_path': self.cfg.SAVE_DIR,  # Where to save evaluation predictions, save state, etc.
-        }
-
-        torch.save(save_sate, save_name)
-
-    def save_weights(self, name_suffix):
+    def save_weights(self, name_suffix=None):
 
         if name_suffix:  # Sometimes, we want to manually add some extra info. E.g. when new best MAE
             save_name = f'{self.cfg.STATE_DICTS_DIR}/weights_ep_{self.epoch}_{name_suffix}.pth'

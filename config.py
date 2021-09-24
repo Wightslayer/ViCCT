@@ -31,10 +31,7 @@ cfg.WEIGHT_DECAY = 1e-5
 
 cfg.MAX_EPOCH = 1300  # Train for this many epochs
 cfg.EVAL_EVERY = 10  # Eval the model on the evaluation set every 'EVAL_EVERY' epochs
-cfg.SAVE_EVERY_N_EVALS = 10  # Every Nth evaluation, save model regardless of performance
-
-# Don't touch this one. Specifies at which epochs to save the model.
-cfg.SAVE_EVERY = cfg.SAVE_EVERY_N_EVALS * cfg.EVAL_EVERY
+cfg.SAVE_EVERY = 100  # Save the model weights every this many epochs, regardless of performance
 
 # Used to specify how many example predictions to save of evaluation.
 # I.e. with every evaluation, save this many predictions.
