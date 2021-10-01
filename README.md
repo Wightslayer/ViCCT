@@ -38,7 +38,7 @@ We set up a virtual Python environment, and install all necessary Python package
 ## Repository usage
 
 ### Training a Generic ViCCT model
-1. Download the following public datasets:
+#### 1. Download the following public datasets:
 - ShanghaiTech - Part A: https://www.kaggle.com/tthien/shanghaitech
 - ShanghaiTech - Part B: https://www.kaggle.com/tthien/shanghaitech
 - LSTN FDST: https://github.com/sweetyy83/Lstn_fdst_dataset
@@ -48,7 +48,7 @@ We set up a virtual Python environment, and install all necessary Python package
 - We suggest creating 'datasets' folder in which all these downloaded datasets can be placed.
 
 
-2. Make train/val/test splits for the downloaded datasets:
+#### 2. Make train/val/test splits for the downloaded datasets:
 - Navigate to the folder notebooks/Make_train_val_test_splits in your terminal.
 - Start Juypter Notebook inside your activated virtual environment:
     - Navigate your terminal to the folder where you cloned the ViCCT repository.
@@ -58,7 +58,7 @@ We set up a virtual Python environment, and install all necessary Python package
 - Modify the 'base_path' in the third cell of each notebook, to make it point to the folder containing the corresponding dataset. Then run all the cells in each notebook. This should create multiple .csv files in the dataset folder, linking to the images/gt files, and representing train/val/test splits for the dataset. (the file structure of the dataset-downloads might differ from what the notebooks assume when using different versions of the datasets. If this is the case, please update the notebooks to match the dataset structure).
 
 
-3. Run main.py to train the model.
+#### 3. Run main.py to train the model.
 - Note: Traning to convergence can take a long time (we have been training some models for up to 2 weeks for the largest ViCCT versions using our suggested ViCCT config settings, and using all public datasets mentioned in step 1, and using a 2080 Ti).
 - To check the training results, you can use tensorboard:
     - Open a new terminal in your local ViCCT repository folder.
