@@ -73,7 +73,7 @@ To use the model, make sure that Jupyter Notebook is running (using your virtual
   - Activate the virtual environment: `source venv/bin/activate`
   - Start Juyter Notebook: `jupyter notebook`
 
-Open the notebook "notebooks/Make image prediction.ipynb". In the third code-cell the 'weights_path' can be set to a .pth file resulting from one of your own training runs (make sure the 'model_name' matches the network type used during training). The 'image_path' can be changed to point to a local image (e.g. .jpg or .png files). Next, all cells in the notebook can be ran in order to get a density map and crowd counting prediction for the image located on the image_path. You can change the 'image_path' to point to another image and run the entire notebook again to get another prediction.
+Open the notebook "notebooks/Make image prediction.ipynb". In the third code-cell the 'weights_path' can be set to a .pth file resulting from one of your own training runs, or to one of the .pth files in the 'models/trained_models' folder (make sure the 'model_name' matches the network type used during training). The 'image_path' can be changed to point to a local image (e.g. .jpg or .png files). Next, all cells in the notebook can be ran in order to get a density map and crowd counting prediction for the image located on the image_path. You can change the 'image_path' to point to another image and run the entire notebook again to get another prediction.
 
 
 
