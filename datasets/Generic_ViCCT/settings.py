@@ -46,6 +46,10 @@ cfg_data.IGNORE_BUFFER = 16  # When reconstructing the complete density map, how
 
 
 
+# =========================================================================== #
+#                             SET DATASET FOLDER PATH                         #
+# =========================================================================== #
+dataset_folder = os.path.join('D:', 'your', 'dataset', 'folder')
 
 
 # =========================================================================== #
@@ -55,38 +59,38 @@ cfg_data.TRAIN_DATASETS = [
     {
         'dataset_name': 'ShanghaiTech_Part_B',
         'den_gen_key': 'SHT',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_B', 'train_and_val_split.csv'),
+        'dataset_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_B'),
+        'split_to_use_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_B', 'train_and_val_split.csv'),
     },
     {
         'dataset_name': 'ShanghaiTech_Part_A',
         'den_gen_key': 'SHT',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A', 'train_and_val_split.csv'),
+        'dataset_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_A'),
+        'split_to_use_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_A', 'train_and_val_split.csv'),
     },
     {
         'dataset_name': 'LSTN_FDST',
         'den_gen_key': 'LSTN_FDST',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'LSTN_FDST_DATASET'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'LSTN_FDST_DATASET', 'train_and_val_split.csv'),
+        'dataset_path': os.path.join(dataset_folder, 'LSTN_FDST_DATASET'),
+        'split_to_use_path': os.path.join(dataset_folder, 'LSTN_FDST_DATASET', 'train_and_val_split.csv'),
     },
     {
         'dataset_name': 'JHU-Crowd++',
         'den_gen_key': 'JHU_CROWD_PlusPlus',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'JHU-CROWD++'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'JHU-CROWD++', 'train_and_val_split.csv'),
+        'dataset_path': os.path.join(dataset_folder, 'JHU-CROWD++'),
+        'split_to_use_path': os.path.join(dataset_folder, 'JHU-CROWD++', 'train_and_val_split.csv'),
     },
     {
         'dataset_name': 'NWPU-Crowd',
         'den_gen_key': 'NWPU_Crowd',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'NWPU-Crowd'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'NWPU-Crowd', 'train_and_val_split.csv'),
+        'dataset_path': os.path.join(dataset_folder, 'NWPU-Crowd'),
+        'split_to_use_path': os.path.join(dataset_folder, 'NWPU-Crowd', 'train_and_val_split.csv'),
     },
     {
         'dataset_name': 'UCF-QNRF_ECCV18',
         'den_gen_key': 'UCF_QNRF_ECCV18',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18', 'train_and_val_split.csv'),
+        'dataset_path': os.path.join(dataset_folder, 'UCF-QNRF_ECCV18'),
+        'split_to_use_path': os.path.join(dataset_folder, 'UCF-QNRF_ECCV18', 'train_and_val_split.csv'),
     }
 ]
 
@@ -99,8 +103,8 @@ cfg_data.VAL_DATASETS = [
     # {
     #     'dataset_name': 'ShanghaiTech_Part_A',
     #     'den_gen_key': 'SHT',
-    #     'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A'),
-    #     'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'ShanghaiTech', 'Part_A', 'val_split.csv'),
+    #     'dataset_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_A'),
+    #     'split_to_use_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_A', 'val_split.csv'),
     # }
 ]
 
@@ -111,35 +115,37 @@ cfg_data.VAL_DATASETS = [
 #     {
 #         'dataset_name': 'VP',
 #         'den_gen_key': 'Municipality',
-#         'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020'),
-#         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020', 'val_split.csv'),
-#     }
-# ]
-# a = 'Part_A'
-# cfg_data.TEST_DATASETS = [
-#     {
-#         'dataset_name': 'ShanghaiTech_' + a,
-#         'den_gen_key': 'SHT',
-#         'dataset_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a),
-#         'split_to_use_path': os.path.join('D:\\', 'ThesisData', 'Datasets', 'ShanghaiTech', a, 'test_split.csv'),
+#         'dataset_path': os.path.join(dataset_folder, 'Municipality', 'Vondelpark_8_10May2020'),
+#         'split_to_use_path': os.path.join(dataset_folder, 'Municipality', 'Vondelpark_8_10May2020', 'val_split.csv'),
 #     }
 # ]
 
+
 # cfg_data.TEST_DATASETS = [
 #     {
-#         'dataset_name': 'UCF-QNRF_ECCV18',
-#         'den_gen_key': 'UCF_QNRF_ECCV18',
-#         'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18'),
-#         'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'UCF-QNRF_ECCV18',
-#                                           'test_split.csv'),
+#         'dataset_name': 'ShanghaiTech_' + 'part_A',
+#         'den_gen_key': 'SHT',
+#         'dataset_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_A'),
+#         'split_to_use_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_A', 'test_split.csv'),
 #     }
 # ]
+
+
+# cfg_data.TEST_DATASETS = [
+#     {
+#         'dataset_name': 'ShanghaiTech_' + 'part_B',
+#         'den_gen_key': 'SHT',
+#         'dataset_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_B'),
+#         'split_to_use_path': os.path.join(dataset_folder, 'ShanghaiTech', 'part_B', 'test_split.csv'),
+#     }
+# ]
+
 
 cfg_data.TEST_DATASETS = [
     {
-        'dataset_name': 'VP',
-        'den_gen_key': 'Municipality',
-        'dataset_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020'),
-        'split_to_use_path': os.path.join('D:', 'ThesisData', 'Datasets', 'Municipality', 'Vondelpark_8_10May2020', 'test_split.csv'),
+        'dataset_name': 'UCF-QNRF_ECCV18',
+        'den_gen_key': 'UCF_QNRF_ECCV18',
+        'dataset_path': os.path.join(dataset_folder, 'UCF-QNRF_ECCV18'),
+        'split_to_use_path': os.path.join(dataset_folder, 'Datasets', 'UCF-QNRF_ECCV18', 'test_split.csv'),
     }
 ]
