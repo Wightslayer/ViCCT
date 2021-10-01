@@ -51,9 +51,9 @@ We set up a virtual Python environment, and install all necessary Python package
 #### 2. Make train/val/test splits for the downloaded datasets:
 - Navigate to the folder notebooks/Make_train_val_test_splits in your terminal.
 - Start Juypter Notebook inside your activated virtual environment:
-    - Navigate your terminal to the folder where you cloned the ViCCT repository.
-    - Activate the virtual environment: `source venv/bin/activate`
-    - Start Juyter Notebook: `jupyter notebook`
+  - Navigate your terminal to the folder where you cloned the ViCCT repository.
+  - Activate the virtual environment: `source venv/bin/activate`
+  - Start Juyter Notebook: `jupyter notebook`
 - For each of the downloaded datasets in step 1, open the corresponding notebook.
 - Modify the 'base_path' in the third cell of each notebook, to make it point to the folder containing the corresponding dataset. Then run all the cells in each notebook. This should create multiple .csv files in the dataset folder, linking to the images/gt files, and representing train/val/test splits for the dataset. (the file structure of the dataset-downloads might differ from what the notebooks assume when using different versions of the datasets. If this is the case, please update the notebooks to match the dataset structure).
 
@@ -61,17 +61,17 @@ We set up a virtual Python environment, and install all necessary Python package
 #### 3. Run main.py to train the model.
 - Note: Traning to convergence can take a long time (we have been training some models for up to 2 weeks for the largest ViCCT versions using our suggested ViCCT config settings, and using all public datasets mentioned in step 1, and using a 2080 Ti).
 - To check the training results, you can use tensorboard:
-    - Open a new terminal in your local ViCCT repository folder.
-    - Activate the virtual environment: `source venv/bin/activate`
-    - Start Tensorboard: `tensorboard --logdir=runs`
-    - Open Tensorboard in your browser to check the run results (usually at: http://localhost:6006/).
+  - Open a new terminal in your local ViCCT repository folder.
+  - Activate the virtual environment: `source venv/bin/activate`
+  - Start Tensorboard: `tensorboard --logdir=runs`
+  - Open Tensorboard in your browser to check the run results (usually at: http://localhost:6006/).
 - The resulting network weights will be saved in the `runs` folder. This folder contains all runs and their results. The resulting network weights of a run will also be stored in .pth files within the folder of a run (be default, a .pth file is saved every 100 epochs). These network weights can be used to initiate a network in order to make crowd counting predictions with the network. NB: when using these weights, make sure that the same network type is used as during training; e.g. ViCCT_tiny, ViCCT_large, etc.
 
 
 ### Using the Generic ViCCT model
 To use the model, make sure that Jupyter Notebook is running (using your virtual environment):
-    - Activate the virtual environment: `source venv/bin/activate`
-    - Start Juyter Notebook: `jupyter notebook`
+  - Activate the virtual environment: `source venv/bin/activate`
+  - Start Juyter Notebook: `jupyter notebook`
 
 Open the notebook "notebooks/Make image prediction.ipynb". In the third code-cell the 'weights_path' can be set to a .pth file resulting from one of your own training runs (make sure the 'model_name' matches the network type used during training). The 'image_path' can be changed to point to a local image (e.g. .jpg or .png files). Next, all cells in the notebook can be ran in order to get a density map and crowd counting prediction for the image located on the image_path. You can change the 'image_path' to point to another image and run the entire notebook again to get another prediction.
 
