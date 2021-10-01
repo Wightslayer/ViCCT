@@ -14,14 +14,14 @@ cfg.SEED = 42  # Seed for reproducibility.
 # Select the model variant to use and which dataset to train it on.
 # The model must be selected from above AND the dataset name MUST match the name in the dataset
 # folder. E.g. SHTB_DeiT to load SHTB for DeiT. Just SHTB does not work!
-cfg.MODEL = 'ViCCT_small'
+cfg.MODEL = 'ViCCT_large'
 cfg.DATASET = 'Generic_ViCCT'
 
-# PRETRAINED is for if we want to load a pretrained CROWD COUNTING MODEL.
-# PRETRAINED_WEIGHTS is the path where these weights are stored.
-cfg.PRETRAINED = True
-# cfg.PRETRAINED_WEIGHTS = 'D:\\OneDrive\\OneDrive - UvA\\ThesisData\\trained_models\\SWIN generic\\save_state_ep_400.pth'
-cfg.PRETRAINED_WEIGHTS = 'D:\\OneDrive\\OneDrive - UvA\\ThesisData\\trained_models\\ViCCT small TL SHTB\\save_state_ep_840_new_best_MAE_8.063.pth'
+# When cfg.PRETRAINED is set to True, we can load the weights of a pretrained CROWD COUNTING MODEL.
+cfg.PRETRAINED = False
+
+# PRETRAINED_WEIGHTS is the path where the pretrained weights loaded from (only used when cfg.PRETRAINED is set to True).
+cfg.PRETRAINED_WEIGHTS = 'YOUR//PATH//HERE//PRETRAINED_WEIGHTS.pth'
 
 # Training parameters
 cfg.LR = 1e-4  # LR for meta learning in meta learning. Standard LR for standard learning
