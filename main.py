@@ -38,7 +38,7 @@ def backup_code(cfg):
 
     base_dir = cfg.CODE_DIR
     for dirpath, dirnames, filenames in os.walk('.'):
-        if '__pycache__' in dirpath or dirpath.startswith('.' + os.path.sep + '.') or dirpath.startswith('.' + os.path.sep + 'runs') or dirpath.startswith('.' + os.path.sep + 'notebooks'):
+        if '__pycache__' in dirpath or dirpath.startswith('.' + os.path.sep + '.') or dirpath.startswith('.' + os.path.sep + 'runs') or dirpath.startswith('.' + os.path.sep + 'notebooks') or dirpath.startswith('.' + os.path.sep + 'venv'):
             continue
 
         save_path = os.path.join(base_dir, dirpath)
