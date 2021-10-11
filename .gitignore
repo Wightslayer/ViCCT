@@ -1,0 +1,6 @@
+**/__pycache__
+latest_state.pth
+*.ipynb_checkpoints/
+runs/
+venv/
+try_image_result
